@@ -5,7 +5,9 @@
     include_once("config.php");
    // include_once("inc/KLogger.php");
   //  include_once("inc/class.MySQL.php");
+    require_once('inc/class.eventdesigner.php');  
     require_once('lib/nusoap.php');
+    
     
     //$log = new KLogger("errorlog", KLogger::INFO);
     
@@ -16,15 +18,16 @@
     
     
 //$server = new soap_server('ws.wsdl');
+$ed = new eventDesigner();
 $server = new soap_server();
 
 $server->configureWSDL('eventDesigner', 'urn:eventDesigner');
  
-$server->register('getVersion', array(), array('version' => 'xsd:string'), 'xsd:eventDesigner');
+$server->register('getVer', array(), array('version' => 'xsd:string'), 'xsd:eventDesigner');
  
-function getVersion(){
-    global $ed_version;
-    return $ed_version;
+function getVer(){
+    global $ed;
+    return $ed->getVersion();
 }
 
 function reverse($in){
