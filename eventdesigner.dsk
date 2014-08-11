@@ -1,5 +1,14 @@
 [Files]
-Files=0
+File0=Z:\home\eventdesigner\www\index.php
+IsActive0=0
+ZIndex2=2
+File1=Z:\home\eventdesigner\www\inc\class.eventdesigner.php
+IsActive1=1
+ZIndex1=0
+File2=Z:\home\eventdesigner\www\ed.php
+IsActive2=0
+ZIndex0=1
+Files=3
 
 [breakpoints]
 bp_count=0

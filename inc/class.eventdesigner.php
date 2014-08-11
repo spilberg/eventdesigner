@@ -1,4 +1,10 @@
 <?php
+/**
+*  event designer main class
+*  @author Nick Korbut
+*  @name eventdesigner
+*  @version 0.0.0.1
+*/
 
 class eventDesigner {
  
@@ -9,7 +15,7 @@ class eventDesigner {
     }
     
     function getVersion(){
-     return $this->version;   
+        return $this->version;   
     }
     
     
