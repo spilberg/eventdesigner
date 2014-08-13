@@ -46,6 +46,9 @@ $server->wsdl->addComplexType(
     )
 ); */
 
+/**
+* @desc Error structure defenition
+*/
 $server->wsdl->addComplexType(
     'Error',
     'complexType',
@@ -58,6 +61,9 @@ $server->wsdl->addComplexType(
     )
 );
 
+/**
+* @desc Location struvture defenition
+*/
 $server->wsdl->addComplexType(
     'Location',
     'complexType',
@@ -66,11 +72,49 @@ $server->wsdl->addComplexType(
     '',
     array(
         'locationname' => array('name' => 'locationname', 'type' => 'xsd:string'),
+        'description' => array('name' => 'description', 'type' => 'xsd:string'),
         'latitude'     => array('name' => 'latitude', 'type' => 'xsd:string'),
-        'longitude'   => array('name' => 'longitude', 'type' => 'xsd:string')
+        'longitude'     => array('name' => 'longitude', 'type' => 'xsd:string')
     )
 ); 
 
+/**
+* @desc Task defenition
+*/
+$server->wsdl->addComplexType(
+    'Task',
+    'complexType',
+    'struct',
+    'all',
+    '',
+    array(
+         'taskname' => array('name' => 'taskname', 'type' => 'xsd:string'),
+         'starttime' => array('name' => 'starttime', 'type' => 'xsd:string'),
+         'endtime ' => array('name' => 'endtime', 'type' => 'xsd:string'),
+         'description' => array('name' => 'description', 'type' => 'xsd:string'),
+         'responsible' => array('name' => 'responsible', 'type' => 'xsd:string'),
+         'activity' => array('name' => 'activity', 'type' => 'xsd:string'),
+         'cost' => array('name' => 'cost', 'type' => 'xsd:string')
+    )
+);
+
+$server->wsdl->addComplexType(
+    'Taskline',
+    'complexType',
+    'array',
+    '',
+    'SOAP-ENC:Array',
+    array( 'task' => array('name' => 'task', 'type' => 'tns:Task') ),
+    array( array( "ref" => "SOAP-ENC:arrayType", "wsdl:arrayType" => "tns:Task[]") ),
+    "tns:Task"
+    
+);
+
+
+
+/**
+* @desc Event defenition
+*/
 $server->wsdl->addComplexType(
     'Event',
     'complexType',
@@ -86,7 +130,8 @@ $server->wsdl->addComplexType(
         'notes'       => array('name' => 'notes', 'type' => 'xsd:string'),
         'responsible' => array('name' => 'responsible', 'type' => 'xsd:string'),
         'estimate'    => array('name' => 'estimate', 'type' => 'xsd:string'),
-        'location'    => array('name' => 'location', 'type' => 'tns:Location')
+        'location'    => array('name' => 'location', 'type' => 'tns:Location'),
+        'taskline'    => array('name' => 'taskline', 'type' => 'tns:Taskline')
     )
 );
 

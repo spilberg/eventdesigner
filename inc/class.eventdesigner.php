@@ -50,10 +50,46 @@ class eventDesigner {
                            'notes'       => 'Event notes',
                            'responsible' => 'Vyacheslav Korbut',
                            'estimate'    => '1000',
-                           'location'    => array( 'locationname' => 'Gidropark', 'latitude'     => '0010', 'longitude'   => '0020')
+                           'location'    => $this->getLocation($eventid),
+                           'taskline'    => $this->getTaskline($eventid)
                     );
                
         return $retValue;
+    }
+    
+    /**
+    * @desc Return task
+    * @param string
+    * @return array
+    */
+    function getTask($id){
+    
+        $retValue = array ('taskname' => 'Task '.$id,
+                           'starttime' => '09.08.2014 8:00',
+                           'endtime ' => '09.08.2014 9:00',
+                           'description' => 'Transfer equipments to location',
+                           'responsible' => 'Vyacheslav Korbut',
+                           'activity' => 'run to location',
+                           'cost' => '15'
+                          );
+                    
+        return $retValue;
+    }
+    
+    function getTaskline($id){
+       // $retValue = array($this->getTask('1'), $this->getTask('2'), $this->getTask('3'));
+       // return $this->getTask('1'); //$retValue;
+       $retarray = array();
+       
+       array_push($retarray, new soapval('Taskline', 'tns:Task', $this->getTask('1')));
+       array_push($retarray, new soapval('Taskline', 'tns:Task', $this->getTask('2')));
+       array_push($retarray, new soapval('Taskline', 'tns:Task', $this->getTask('3')));
+       
+       return $retarray;
+    }
+    
+    function getLocation($id){
+         return array( 'locationname' => 'Gidropark', 'description' => 'Bla Bla Bla', 'latitude'   => '50.50198526955379', 'longitude' => '30.5474853515625');
     }
     
     
