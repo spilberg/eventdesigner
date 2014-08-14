@@ -3,17 +3,18 @@
    // error_reporting(0);
     
     include_once("config.php");
-   // include_once("inc/KLogger.php");
-  //  include_once("inc/class.MySQL.php");
+    include_once("inc/KLogger.php");
+    include_once("inc/class.MySQL.php");
     require_once('inc/class.eventdesigner.php');  
     require_once('lib/nusoap.php');
     
-   //$log = new KLogger("errorlog", KLogger::INFO);
-   // $db = new MySQL($gps_db, $gps_db_user, $gps_db_pass, $gps_db_host);
+    $log = new KLogger("errorlog", KLogger::INFO);
+    $db = new MySQL($ed_db, $ed_db_user, $ed_db_pass, $ed_db_host);
    // $today = date("Y-m-d H:i:s");
+   
     
-//$server = new soap_server('ws.wsdl');
-$ed = new eventDesigner();
+// Create event Designer instance
+$ed = new eventDesigner($db);
 
 // Create the server instance
 $server = new soap_server();
@@ -71,15 +72,27 @@ $server->wsdl->addComplexType(
     'all',
     '',
     array(
+        'id'           => array('name' => 'id', 'type' => 'xsd:string'),
         'locationname' => array('name' => 'locationname', 'type' => 'xsd:string'),
-        'description' => array('name' => 'description', 'type' => 'xsd:string'),
+        'description'  => array('name' => 'description', 'type' => 'xsd:string'),
         'latitude'     => array('name' => 'latitude', 'type' => 'xsd:string'),
-        'longitude'     => array('name' => 'longitude', 'type' => 'xsd:string')
+        'longitude'    => array('name' => 'longitude', 'type' => 'xsd:string')
     )
 ); 
 
+$server->wsdl->addComplexType(
+    'Locationlist',
+    'complexType',
+    'array',
+    '',
+    'SOAP-ENC:Array',
+    array( 'location' => array('name' => 'location', 'type' => 'tns:Location') ),
+    array( array( "ref" => "SOAP-ENC:arrayType", "wsdl:arrayType" => "tns:Location[]") ),
+    "tns:Location"
+);
+
 /**
-* @desc Task defenition
+* @desc Task ComplexType defenition
 */
 $server->wsdl->addComplexType(
     'Task',
@@ -98,6 +111,9 @@ $server->wsdl->addComplexType(
     )
 );
 
+/**
+* @desc Taskline ComplexType defenition
+*/
 $server->wsdl->addComplexType(
     'Taskline',
     'complexType',
@@ -110,10 +126,49 @@ $server->wsdl->addComplexType(
     
 );
 
+// ----------- eventlist -----------------
+/**
+* @desc Eventitem ComplexType defenition
+*/
+$server->wsdl->addComplexType(
+    'Eventitem',
+    'complexType',
+    'struct',
+    'all',
+    '',
+    array(
+         'eventid'     => array('name' => 'eventid', 'type' => 'xsd:int'),
+        'eventname'   => array('name' => 'eventname', 'type' => 'xsd:string'),
+        'starttime'   => array('name' => 'starttime', 'type' => 'xsd:string'),
+        'endtime'     => array('name' => 'endtime', 'type' => 'xsd:string'),
+        'description' => array('name' => 'description', 'type' => 'xsd:string'),
+        'notes'       => array('name' => 'notes', 'type' => 'xsd:string'),
+        'responsible' => array('name' => 'responsible', 'type' => 'xsd:string'),
+        'estimate'    => array('name' => 'estimate', 'type' => 'xsd:string')
+    )
+);
+
+/**
+* @desc Eventlist ComplexType defenition
+*/
+$server->wsdl->addComplexType(
+    'Eventlist',
+    'complexType',
+    'array',
+    '',
+    'SOAP-ENC:Array',
+    array( 'eventitem' => array('name' => 'eventitem', 'type' => 'tns:Eventitem') ),
+    array( array( "ref" => "SOAP-ENC:arrayType", "wsdl:arrayType" => "tns:Eventitem[]") ),
+    "tns:Eventitem"
+    
+);
+
+// ------------ end eventlist ------------
+
 
 
 /**
-* @desc Event defenition
+* @desc Event ComplexType defenition
 */
 $server->wsdl->addComplexType(
     'Event',
@@ -138,28 +193,17 @@ $server->wsdl->addComplexType(
 
 
 
-
 // ----------------- REGISTER THE METHOD TO EXPOSE --------------------------
-/* $server->register('hello',                    // method name
-    array('person' => 'tns:Person'),        // input parameters
-    array('return' => 'tns:SweepstakesGreeting'),    // output parameters
-    'urn:hellowsdl2',                        // namespace
-    'urn:hellowsdl2#hello',                    // soapaction
-    'rpc',                                    // style
-    'encoded',                                // use
-    'Greet a person entering the sweepstakes'        // documentation
-);
-*/
 
-//register web method
-$server->register('getVersion', 
-                   array(),
-                   array('version' => 'xsd:string'),
-                   'urn:eventDesigner',
-                   'urn:eventDesigner#getVersion',
-                   'rpc',
-                   'encoded',
-                   'Return version of service');
+$server->register('getVersion',                                              // method name
+                   array(),                                                  // input parameters
+                   array('version' => 'xsd:string', 'error' => 'tns:Error'), // output parameters
+                   'urn:eventDesigner',                                      // namespace
+                   'urn:eventDesigner#getVersion',                           // soapaction
+                   'rpc',                                                    // style
+                   'encoded',                                                // use
+                   'Return version of service'                               // documentation
+                   );
                    
 $server->register('getEvent',
                    array('eventid' => 'xsd:string'),
@@ -169,7 +213,48 @@ $server->register('getEvent',
                    'rpc',
                    'encoded',
                    'Return event object');
- 
+
+/**
+* @desc Return list of events
+*/
+$server->register('getEventList',
+                   array('userid' => 'xsd:string'),
+                   array('eventlist' => 'tns:Eventlist', 'error' => 'tns:Error'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#getEventList',
+                   'rpc',
+                   'encoded',
+                   'Return list of events');  
+                                      
+                   
+$server->register('setLocation', 
+                   array('locationname' => 'xsd:string', 'description' => 'xsd:string', 'latitude' => 'xsd:string', 'longitude' => 'xsd:string'),
+                   array('locationid' => 'xsd:string', 'error' => 'tns:Error'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#setLocation',
+                   'rpc',
+                   'encoded',
+                   'Return version of service');
+                   
+$server->register('getLocation',
+                  array('id' => 'xsd:string'),
+                  array('location' => 'tns:Location', 'error' => 'tns:Error'),
+                  'urn:eventDesigner',
+                  'urn:eventDesigner#getLocation',
+                  'rpc',
+                  'encoded',
+                  'Return Location');                   
+                  
+$server->register('getLocationList',
+                  array(),
+                  array('location' => 'tns:Locationlist', 'error' => 'tns:Error'),
+                  'urn:eventDesigner',
+                  'urn:eventDesigner#getLocationList',
+                  'rpc',
+                  'encoded',
+                  'Return Location list');                                     
+                   
+
  
  // --------------- DEFINE THE METHOD AS A PHP FUNCTION ----------------------
  
@@ -178,21 +263,94 @@ $server->register('getEvent',
  */
  function getVersion(){
     global $ed;
-    return $ed->getVersion();
+        $retValue = '';
+        $retValue = array('version' => $ed->getVersion(), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+    return $retValue;
 }
 
+/**
+* @desc Insert record in Data Base of Location
+* 
+* @param string location name
+* @param string description
+* @param string latitude
+* @param string longitude
+* @return array
+*/
+function setLocation($locationname, $description, $latitude, $longitude){
+    global $ed;
+        $retValue = '';
+        $retValue = array('locationid' => $ed->setLocation($locationname, $description, $latitude, $longitude), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+    return $retValue;
+}
+
+/**
+* @desc Get location 
+* 
+* @param string id
+* @return array
+*/
+function getLocation($id){
+    global $ed;
+        $retValue = '';
+        $location = $ed->getLocation($id);
+        if(is_array($location)){
+            $retValue = array('location' => $location, 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+        }else{
+            $retValue = array('location' => $location, 'error' => array('errorcode' => 20, 'errorname' => 'Query result error '));
+        }
+        //$retValue = array('location' => $ed->getLocation($id), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+        //$retValue = array('location' => array( 'id' => '1', 'locationname' => 'Gidropark', 'description' => 'Bla Bla Bla', 'latitude'   => '50.50198526955379', 'longitude' => '30.5474853515625'), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+    return $retValue;
+}
+
+function getLocationList(){
+    global $ed;
+    $retVatue = '';
+    
+    $locationlist = $ed->getLocation();
+    
+    $retValue = array('location' => $locationlist, 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+    
+    return  $retValue; 
+}
+
+
+
+/**
+* @desc Get event
+* 
+* @param string
+* @return array
+*/
 function getEvent($eventid){
     global $ed;
     $retValue = '';
     
     if($eventid){
-            $retValue = array('event' => $ed->getEvent($eventid), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+       $retValue = array('event' => $ed->getEvent($eventid), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
     }else{
-            $retValue = array('event' => '', 'error' => array('errorcode' => 10, 'errorname' => 'param mismatch'));
+       $retValue = array('event' => '', 'error' => array('errorcode' => 10, 'errorname' => 'param mismatch'));
     }
         
-    return $retValue; //$ed->getEvent($eventid);
+    return $retValue; 
 }
+
+/**
+* @desc return list of events for user with $userid
+* 
+* @param string
+* @return array
+*/
+function getEventList($userid){
+    global $ed;
+    
+       $retValue = '';
+       $retValue = array('eventlist' => $ed->getEventList($userid), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+    
+    return $retValue; 
+}
+
 
 
 // Use the request to (try to) invoke the service
