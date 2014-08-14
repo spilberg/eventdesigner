@@ -26,7 +26,7 @@ CvsHost=
 CvsRoot=
 CvsModule=
 CvsUser=
-CvsPassw=nn1Nvhd0RVrD0BFWrmwdkttIaQ5HZPXK88DBxt9czQILOBl+d1SlOiOwcTYPTH1yOyjJ7qdEVapToCGmr9L+5Q==
+CvsPassw=c7cboUBBRl/cTYKLuJn+99QluqMw8baPzP3yu9iB8y/E1SrTsKO4tzyG/OOY+d5XtIWaAxBRlu+sXdIbiKlOhw==
 CvsUseUtf8=0
 CvsCVSROOT=:pserver:@
 IncPath_count=0
@@ -36,6 +36,18 @@ ParserPropPHPShortTags=1
 ParserProp_PHP_AspTags=0
 ParserProp_JS_ParsePHP=1
 ParserProp_CSS_ParsePHP=1
+[Debugger]
+custom=0
+host=clienthost
+errlevel=3 - All errors and warnings
+sesstimeout=15
+cp=System default encoding
+stopbeginning=0
+dbgsessions=1
+showmaperrors=1
+readonlyed=0
+profwithdbg=0
+Custom.Debug.Settings=1
 [Encoder]
 destinationtype=0
 compatibilitylevel=1
@@ -58,15 +70,3 @@ headertype=0
 \=
 [PHPEdProject.Encodings]
 \=
-[Debugger]
-custom=0
-host=clienthost
-errlevel=3 - All errors and warnings
-sesstimeout=15
-cp=System default encoding
-stopbeginning=1
-dbgsessions=1
-showmaperrors=1
-readonlyed=0
-profwithdbg=0
-Custom.Debug.Settings=0

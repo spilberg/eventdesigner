@@ -3,7 +3,7 @@
 *  event designer main class
 *  @author Nick Korbut
 *  @name eventdesigner
-*  @version 0.0.0.4
+*  @version 0.0.0.5
 */
 
 class eventDesigner {
@@ -23,14 +23,14 @@ class eventDesigner {
     
     /**
     * Constructor
-    * 
     */
     function eventDesigner($db = null){
        $this->db = $db;
        $this->today = date("Y-m-d H:i:s"); 
-       $this->version = "Event Designer version 0.0.0.4";
+       $this->version = "Event Designer version 0.0.0.5";
     }
     
+    // ---------------- Version -----------------
     /**
     * Return version o service
     * 
@@ -40,6 +40,7 @@ class eventDesigner {
         return $this->version;   
     }
     
+    // ---------------- Event ------------------
     /**
     * Return Event object
     * 
@@ -95,6 +96,7 @@ class eventDesigner {
     }
     
     
+    // ---------------- Task --------------------
     /**
     * @desc Return task
     * @param string
@@ -127,6 +129,19 @@ class eventDesigner {
     }
     
     
+    // -------------- Location --------------------
+    function setLocation($locationname, $description = '', $latitude= '', $longitude = ''){
+        
+         $id = null;
+         $data = array('locationname' => $locationname, 'description' => $description, 'latitude' => $latitude, 'longitude' => $longitude);
+         
+         if($this->db->Insert($data, "locations")){
+            $id = $this->db->LastInsertID();    
+         }
+         
+         return $id;
+    }
+    
     /**
     * @desc Get location or list location
     * 
@@ -149,18 +164,113 @@ class eventDesigner {
          //return array( 'id' => '1', 'locationname' => 'Gidropark', 'description' => 'Bla Bla Bla', 'latitude'   => '50.50198526955379', 'longitude' => '30.5474853515625');
     }
     
-    function setLocation($locationname, $description = '', $latitude= '', $longitude = ''){
+    function getLocationList(){
+        $retValue = null;
+        $ret = $this->getLocation();
         
-         $locationid = null;
-         $data = array('locationname' => $locationname, 'description' => $description, 'latitude' => $latitude, 'longitude' => $longitude);
+        /* 
+        if(!is_array($ret[0])){
+            $retValue = array(0 => $ret);
+        }else{
+            $retValue = $ret;
+        }  */
+           
+        return (!is_array($ret[0])) ? array(0 => $ret) : $ret; //$retValue;
+    }
+    
+    
+    // -------------- Equipments -------------------
+    function setEquipment($equipmentname, $description = '', $owner = '', $costofrent = ''){
+        
+         $id = null;
+         $data = array('equipmentname' => $equipmentname,
+                       'description' => $description,
+                       'owner' => $owner,
+                       'costofrent' => $costofrent
+                       );
          
-         if($this->db->Insert($data, "locations")){
-            $locationid = $this->db->LastInsertID();    
+         if($this->db->Insert($data, "equipments")){
+            $id = $this->db->LastInsertID();    
          }
          
-         return $locationid;
+         return $id;
     }
-
+    
+    function getEquipment($id =  null){
+      $equipment = null;   
+        
+      $id ? $where = array('id'=>$id) : '';
+      
+      $res = $this->db->Select("equipments", $where);
+      
+      if($this->db->lastError == null){
+         $equipment = $res;
+      }else{
+         $equipment = $this->db->lastError;
+      }
+      
+      return $equipment;
+    }
+    
+    function getEquipmentList(){
+        
+        $retValue = null;
+        $ret = $this->getEquipment();
+        
+        /* if(!is_array($ret[0])){
+            $retValue = array(0 => $ret);
+        }else{
+            $retValue = $ret;
+        }  */
+           
+        return (!is_array($ret[0])) ? array(0 => $ret) : $ret;
+      
+    }
+    
+    // -------------- Actors ------------------------
+    function setActor($id, $firstname, $lastname = ''){
+        
+        if($id == null){
+             $data = array('firstname' => $firstname,
+                           'lastname' => $lastname
+                          );    
+             if($this->db->Insert($data, "actors")){
+                $id = $this->db->LastInsertID();    
+             }                 
+        } else {
+            $where =  array( 'id' => $id);
+            $data = array( 'firstname' => $firstname,
+                           'lastname' => $lastname
+                          );
+            $this->db->Update("actors", $data, $where);                          
+        } 
+        
+        return $id;
+    }
+    
+    function getActor($id =  null){
+      $actor = null;   
+        
+      $id ? $where = array('id'=>$id) : '';
+      
+      $res = $this->db->Select("actors", $where);
+      
+      if($this->db->lastError == null){
+         $actor = $res;
+      }else{
+         $actor = $this->db->lastError;
+      }
+      
+      return $actor;
+    }
+    
+    function getActorList(){
+        
+        $retValue = null;
+        $ret = $this->getActor();
+        
+        return (!is_array($ret[0])) ? array(0 => $ret) : $ret;
+    }
     
     
 }
