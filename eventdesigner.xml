@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<event name="Birthday" starttime="06.08.2014 12:00" endtime="09.08.2014 20:00">
+    <description>Event description</description>
+	<responsible>Vyacheslav Korbut</responsible>
+	<notes>Event notes</notes>
+	<estimate>1000</estimate>
+	<location>Gidropark</location>
+    <equipments>
+        <item>item 1</item>
+        <item>item 1</item>
+    </equipments>
+	<tasksline>
+		<task starttime="06.08.2014 12:00" endtime="06.08.2014 14:00" name="Rent costumes">
+			<description>Rent costumes in the theater of Ivan Franko</description>
+			<responsible>Vyacheslav Korbut</responsible>
+			<activity/>
+			<cost>10</cost>
+		</task>
+		<task starttime="09.08.2014 8:00" endtime="09.08.2014 9:00" name="Transfer">
+			<description>Transfer equipments to location</description>
+			<responsible>Vyacheslav Korbut</responsible>
+			<activity>ksfkjsd</activity>
+			<cost>15</cost>
+		</task>
+		<task starttime="09.08.2014 12:00" endtime="09.08.2014 15:00" name="Quest">
+			<description>Dragon's Egg Quest</description>
+			<responsible>Nick Korbut</responsible>
+			<activity>
+				<scenario name="Dragon's Egg">
+					<actionpoint name="Magic forest" editable="true" type="state">
+						<description/>
+						<location/>
+						<action duration="10" timelag="0" name="Sharpshooter archer">
+							<description>Archery Targets</description>
+							<equipments>
+								<item>bow</item>
+								<item>target</item>
+							</equipments>
+							<roles>
+								<character name="Archer">
+									<actor name="Peter">
+										<cost>12</cost>
+									</actor>
+								</character>
+							</roles>
+						</action>
+					</actionpoint>
+					<actionpoint name="Forest way" editable="true" type="flow">
+						<description/>
+						<location/>
+						<action duration="15" timelag="0" name="Meeting with a monster">
+							<description>Meeting with a monster</description>
+							<equipments>
+								<item>monster costume</item>
+								<item>sword</item>
+							</equipments>
+							<roles>
+								<character name="Monster">
+									<actor name="Ivan Ivanov">
+										<cost>10</cost>
+									</actor>
+								</character>
+							</roles>
+						</action>
+					</actionpoint>
+					<actionpoint name="Happy end!" editable="true" type="state">
+						<description>Shashlyk mashlyk</description>
+                        <action duration="15" timelag="0" name="Happy end!">
+                        </action>
+						<equipments>
+							<item>meat</item>
+							<item>roaster</item>
+						</equipments>
+					</actionpoint>
+				</scenario>
+			</activity>
+		</task>
+		<task starttime="09.08.2014 15:00" endtime="09.08.2014 17:00" name="Barbecue">
+			<description>Barbecue</description>
+			<responsible>Nick Korbut</responsible>
+			<activity>
+				<equipments>
+					<item>meat</item>
+					<item>roaster</item>
+				</equipments>
+			</activity>
+		</task>
+		<task starttime="09.08.2014 17:00" endtime="09.08.2014 20:00" name="The end!">
+			<description>elimination of the consequences</description>
+			<responsible>Nick Korbut</responsible>
+			<activity>
+				<eguipments>
+					<item>trash bags</item>
+					<item>gloves</item>
+				</eguipments>
+			</activity>
+		</task>
+	</tasksline>
+</event>
