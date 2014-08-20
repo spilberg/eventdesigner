@@ -267,7 +267,14 @@ $server->register('getLocation',
                    array('location' => 'tns:Location', 'error' => 'tns:Error'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getLocation',
-                   'rpc', 'encoded', 'Return Location');                   
+                   'rpc', 'encoded', 'Return Location');
+                   
+$server->register('delLocation', 
+                   array('id' => 'xsd:string'),
+                   array('locationid' => 'xsd:string', 'error' => 'tns:Error'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#delLocation',
+                   'rpc', 'encoded', 'Delete location');                                      
                   
 $server->register('getLocationList',
                    array(),
@@ -289,7 +296,14 @@ $server->register('getEquipment',
                    array('equipment' => 'tns:Equipment', 'error' => 'tns:Error'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getEquipment',
-                   'rpc', 'encoded', 'Return Equipment');                                      
+                   'rpc', 'encoded', 'Return Equipment');  
+
+$server->register('delEquipment', 
+                   array('id' => 'xsd:string'),
+                   array('equipmentid' => 'xsd:string', 'error' => 'tns:Error'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#delEquipment',
+                   'rpc', 'encoded', 'Delete equipment');                                                         
 
 $server->register('getEquipmentList',
                    array(),
@@ -313,6 +327,13 @@ $server->register('getActor',
                    'urn:eventDesigner#getActor',
                    'rpc', 'encoded', 'Return Actor');                                      
 
+$server->register('delActor', 
+                   array('id' => 'xsd:string'),
+                   array('actorid' => 'xsd:string', 'error' => 'tns:Error'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#delActor',
+                   'rpc', 'encoded', 'Delete actor');  
+                                      
 $server->register('getActorList',
                    array(),
                    array('actors' => 'tns:Actorlist', 'error' => 'tns:Error'),
@@ -333,7 +354,14 @@ $server->register('getCharacter',
                    array('character' => 'tns:Character', 'error' => 'tns:Error'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getCharacter',
-                   'rpc', 'encoded', 'Return Character');                                      
+                   'rpc', 'encoded', 'Return Character'); 
+                   
+$server->register('delCharacter',
+                   array('id' => 'xsd:string'),
+                   array('characterid' => 'xsd:string', 'error' => 'tns:Error'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#delCharacter',
+                   'rpc', 'encoded', 'Delete Character');                                                        
 
 $server->register('getCharacterList',
                    array(),
@@ -368,6 +396,15 @@ function setLocation($id, $locationname, $description, $latitude, $longitude){
     global $ed;
         $retValue = '';
         $retValue = array('locationid' => $ed->setLocation($id, $locationname, $description, $latitude, $longitude),
+                          'error' => array('errorcode' => 0, 'errorname' => 'ok')
+                          );
+    return $retValue;
+}
+
+function delLocation($id){
+        global $ed;
+        $retValue = '';
+        $retValue = array('locationid' => $ed->delLocation($id),
                           'error' => array('errorcode' => 0, 'errorname' => 'ok')
                           );
     return $retValue;
@@ -445,6 +482,14 @@ function getEquipment($id){
     return $retValue;
 }
 
+function delEquipment($id){
+    global $ed;
+    $retValue = '';
+    $retValue = array('equipmentid' => $ed->delEquipment($id),
+                      'error' => array('errorcode' => 0, 'errorname' => 'ok')
+                      );
+    return $retValue;
+}
 /**
 * Get location list
 * 
@@ -492,6 +537,15 @@ function getActor($id){
     return $retValue;
 }
 
+function delActor($id){
+    global $ed;
+    $retValue = '';
+    
+    $retValue = array('actorid' => $ed->delActor($id), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+    
+    return $retValue;    
+}
+
 /**
 * Get actors list
 * 
@@ -532,6 +586,12 @@ function setCharacter($id = null, $charactername, $description = '' , $notes = '
 function getCharacter($id){
     global $ed;
     return array('character' => $ed->getCharacter($id));
+}
+
+function delCharacter($id){
+    global $ed;
+    
+    return array('charecterid' => $ed->delCharacter($id), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
 }
 
 /**

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project name="ed" resourceRoot="" soapui-version="3.5" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="eventDesignerBinding" type="wsdl" bindingName="{urn:eventDesigner}eventDesignerBinding" soapVersion="1_1" anonymous="optional" definition="http://eventdesigner/ed.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://eventdesigner/ed.php?wsdl"><con:part><con:url>http://eventdesigner/ed.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="urn:eventDesigner" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="urn:eventDesigner" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<con:soapui-project name="ed" resourceRoot="" soapui-version="3.5" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="eventDesignerBinding" type="wsdl" bindingName="{urn:eventDesigner}eventDesignerBinding" soapVersion="1_1" anonymous="optional" definition="http://eventdesigner/ed.php?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://eventdesigner/ed.php?wsdl"><con:part><con:url>http://eventdesigner/ed.php?wsdl</con:url><con:content><![CDATA[<definitions targetNamespace="urn:eventDesigner" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="urn:eventDesigner" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
     <xsd:schema targetNamespace="urn:eventDesigner">
       <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -167,6 +167,13 @@
     <part name="location" type="tns:Location"/>
     <part name="error" type="tns:Error"/>
   </message>
+  <message name="delLocationRequest">
+    <part name="id" type="xsd:string"/>
+  </message>
+  <message name="delLocationResponse">
+    <part name="locationid" type="xsd:string"/>
+    <part name="error" type="tns:Error"/>
+  </message>
   <message name="getLocationListRequest"/>
   <message name="getLocationListResponse">
     <part name="location" type="tns:Locationlist"/>
@@ -190,6 +197,13 @@
     <part name="equipment" type="tns:Equipment"/>
     <part name="error" type="tns:Error"/>
   </message>
+  <message name="delEquipmentRequest">
+    <part name="id" type="xsd:string"/>
+  </message>
+  <message name="delEquipmentResponse">
+    <part name="equipmentid" type="xsd:string"/>
+    <part name="error" type="tns:Error"/>
+  </message>
   <message name="getEquipmentListRequest"/>
   <message name="getEquipmentListResponse">
     <part name="equipments" type="tns:Equipmentlist"/>
@@ -211,6 +225,13 @@
     <part name="actor" type="tns:Actor"/>
     <part name="error" type="tns:Error"/>
   </message>
+  <message name="delActorRequest">
+    <part name="id" type="xsd:string"/>
+  </message>
+  <message name="delActorResponse">
+    <part name="actorid" type="xsd:string"/>
+    <part name="error" type="tns:Error"/>
+  </message>
   <message name="getActorListRequest"/>
   <message name="getActorListResponse">
     <part name="actors" type="tns:Actorlist"/>
@@ -225,16 +246,26 @@
   </message>
   <message name="setCharacterResponse">
     <part name="characterid" type="xsd:string"/>
+    <part name="error" type="tns:Error"/>
   </message>
   <message name="getCharacterRequest">
     <part name="id" type="xsd:string"/>
   </message>
   <message name="getCharacterResponse">
     <part name="character" type="tns:Character"/>
+    <part name="error" type="tns:Error"/>
+  </message>
+  <message name="delCharacterRequest">
+    <part name="id" type="xsd:string"/>
+  </message>
+  <message name="delCharacterResponse">
+    <part name="characterid" type="xsd:string"/>
+    <part name="error" type="tns:Error"/>
   </message>
   <message name="getCharacterListRequest"/>
   <message name="getCharacterListResponse">
     <part name="actors" type="tns:Characterlist"/>
+    <part name="error" type="tns:Error"/>
   </message>
   <portType name="eventDesignerPortType">
     <operation name="getVersion">
@@ -262,6 +293,11 @@
       <input message="tns:getLocationRequest"/>
       <output message="tns:getLocationResponse"/>
     </operation>
+    <operation name="delLocation">
+      <documentation>Delete location</documentation>
+      <input message="tns:delLocationRequest"/>
+      <output message="tns:delLocationResponse"/>
+    </operation>
     <operation name="getLocationList">
       <documentation>Return Location list</documentation>
       <input message="tns:getLocationListRequest"/>
@@ -276,6 +312,11 @@
       <documentation>Return Equipment</documentation>
       <input message="tns:getEquipmentRequest"/>
       <output message="tns:getEquipmentResponse"/>
+    </operation>
+    <operation name="delEquipment">
+      <documentation>Delete equipment</documentation>
+      <input message="tns:delEquipmentRequest"/>
+      <output message="tns:delEquipmentResponse"/>
     </operation>
     <operation name="getEquipmentList">
       <documentation>Return Equipment list</documentation>
@@ -292,6 +333,11 @@
       <input message="tns:getActorRequest"/>
       <output message="tns:getActorResponse"/>
     </operation>
+    <operation name="delActor">
+      <documentation>Delete actor</documentation>
+      <input message="tns:delActorRequest"/>
+      <output message="tns:delActorResponse"/>
+    </operation>
     <operation name="getActorList">
       <documentation>Return Actor list</documentation>
       <input message="tns:getActorListRequest"/>
@@ -306,6 +352,11 @@
       <documentation>Return Character</documentation>
       <input message="tns:getCharacterRequest"/>
       <output message="tns:getCharacterResponse"/>
+    </operation>
+    <operation name="delCharacter">
+      <documentation>Delete Character</documentation>
+      <input message="tns:delCharacterRequest"/>
+      <output message="tns:delCharacterResponse"/>
     </operation>
     <operation name="getCharacterList">
       <documentation>Return Character list</documentation>
@@ -360,6 +411,15 @@
         <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
+    <operation name="delLocation">
+      <soap:operation soapAction="urn:eventDesigner#delLocation" style="rpc"/>
+      <input>
+        <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
     <operation name="getLocationList">
       <soap:operation soapAction="urn:eventDesigner#getLocationList" style="rpc"/>
       <input>
@@ -380,6 +440,15 @@
     </operation>
     <operation name="getEquipment">
       <soap:operation soapAction="urn:eventDesigner#getEquipment" style="rpc"/>
+      <input>
+        <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+    <operation name="delEquipment">
+      <soap:operation soapAction="urn:eventDesigner#delEquipment" style="rpc"/>
       <input>
         <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
@@ -414,6 +483,15 @@
         <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </output>
     </operation>
+    <operation name="delActor">
+      <soap:operation soapAction="urn:eventDesigner#delActor" style="rpc"/>
+      <input>
+        <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
     <operation name="getActorList">
       <soap:operation soapAction="urn:eventDesigner#getActorList" style="rpc"/>
       <input>
@@ -434,6 +512,15 @@
     </operation>
     <operation name="getCharacter">
       <soap:operation soapAction="urn:eventDesigner#getCharacter" style="rpc"/>
+      <input>
+        <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </output>
+    </operation>
+    <operation name="delCharacter">
+      <soap:operation soapAction="urn:eventDesigner#delCharacter" style="rpc"/>
       <input>
         <soap:body use="encoded" namespace="urn:eventDesigner" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
       </input>
@@ -546,10 +633,10 @@
    <soapenv:Header/>
    <soapenv:Body>
       <urn:setCharacter soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-         <id xsi:type="xsd:string">1</id>
-         <charactername xsi:type="xsd:string">Баба яга</charactername>
-         <description xsi:type="xsd:string">Яга</description>
-         <notes xsi:type="xsd:string">Характер скверный</notes>
+         <id xsi:type="xsd:string"/>
+         <charactername xsi:type="xsd:string">Baba-Yaga</charactername>
+         <description xsi:type="xsd:string">baba</description>
+         <notes xsi:type="xsd:string">Qo!</notes>
          <actorid xsi:type="xsd:string">3</actorid>
       </urn:setCharacter>
    </soapenv:Body>
@@ -565,7 +652,35 @@
    <soapenv:Body>
       <urn:getCharacterList soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:eventDesigner#getCharacterList"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite name="TestSuite 1"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase 1" searchProperties="true" id="77c1eb24-b7b4-4480-8ad5-f48e849cbfbf"><con:settings/><con:testStep type="request" name="getVersion"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>eventDesignerBinding</con:interface><con:operation>getVersion</con:operation><con:request name="getVersion"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://eventdesigner/ed.php?DBGSESSID=1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:eventDesigner">
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:eventDesigner#getCharacterList"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="urn:eventDesigner#delCharacter" name="delCharacter" bindingOperationName="delCharacter" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://eventdesigner/ed.php?DBGSESSID=1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:eventDesigner">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:delCharacter soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <id xsi:type="xsd:string">4</id>
+      </urn:delCharacter>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:eventDesigner#delCharacter"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="urn:eventDesigner#delActor" name="delActor" bindingOperationName="delActor" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://eventdesigner/ed.php?DBGSESSID=1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:eventDesigner">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:delActor soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <id xsi:type="xsd:string">2</id>
+      </urn:delActor>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:eventDesigner#delActor"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="urn:eventDesigner#delEquipment" name="delEquipment" bindingOperationName="delEquipment" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://eventdesigner/ed.php?DBGSESSID=1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:eventDesigner">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:delEquipment soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <id xsi:type="xsd:string">11</id>
+      </urn:delEquipment>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:eventDesigner#delEquipment"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation isOneWay="false" action="urn:eventDesigner#delLocation" name="delLocation" bindingOperationName="delLocation" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://eventdesigner/ed.php?DBGSESSID=1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:eventDesigner">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:delLocation soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+         <id xsi:type="xsd:string">5</id>
+      </urn:delLocation>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:eventDesigner#delLocation"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite name="TestSuite 1"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase 1" searchProperties="true" id="77c1eb24-b7b4-4480-8ad5-f48e849cbfbf"><con:settings/><con:testStep type="request" name="getVersion"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>eventDesignerBinding</con:interface><con:operation>getVersion</con:operation><con:request name="getVersion"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://eventdesigner/ed.php?DBGSESSID=1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:eventDesigner">
    <soapenv:Header/>
    <soapenv:Body>
       <urn:getVersion soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>

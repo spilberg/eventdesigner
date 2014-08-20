@@ -18,6 +18,8 @@ class eventDesigner {
     var $db = null;
     
     var $today = null; 
+    
+    var $dbpref = '';
  
     
     
@@ -28,6 +30,8 @@ class eventDesigner {
        $this->db = $db;
        $this->today = date("Y-m-d H:i:s"); 
        $this->version = "Event Designer version 0.0.0.5";
+       $this->dbpref = "jos_event_";
+       //$this->dbpref = "";
     }
     
     // ---------------- Version -----------------
@@ -136,12 +140,12 @@ class eventDesigner {
          $data = array('locationname' => $locationname, 'description' => $description, 'latitude' => $latitude, 'longitude' => $longitude);
          
          if($id == null){
-             if($this->db->Insert($data, "locations")){
+             if($this->db->Insert($data, $this->dbpref."locations")){
                $id = $this->db->LastInsertID();    
              } 
          } else {
              $where =  array( 'id' => $id);
-            $this->db->Update("locations", $data, $where);    
+            $this->db->Update($this->dbpref."locations", $data, $where);    
          }
          
          return $id;
@@ -157,7 +161,7 @@ class eventDesigner {
         
       $id ? $where = array('id'=>$id) : '';
       
-      $res = $this->db->Select("locations", $where);
+      $res = $this->db->Select($this->dbpref."locations", $where);
       
       if($this->db->lastError == null){
          $item = $res;
@@ -166,6 +170,23 @@ class eventDesigner {
       }
       
       return $item;
+    }
+    
+    function delLocation($id){
+      global $server;
+      $item = null;
+        
+      $where = array('id'=>$id);
+      
+      $res = $this->db->Delete($this->dbpref."locations", $where);
+      
+      if($this->db->lastError == null && $this->db->affected !== 0){
+         $item = $id;
+      }else{
+         $item = $server->fault('Server', 'id: '.$id.' not found', 'delLocation', 'details'); 
+      }
+      
+      return $item; 
     }
     
     function getLocationList(){
@@ -194,12 +215,12 @@ class eventDesigner {
                        );
          
          if($id == null){
-            if($this->db->Insert($data, "equipments")){
+            if($this->db->Insert($data, $this->dbpref."equipments")){
                $id = $this->db->LastInsertID();    
             }    
          } else {
             $where =  array( 'id' => $id);
-            $this->db->Update("equipments", $data, $where);                          
+            $this->db->Update($this->dbpref."equipments", $data, $where);                          
          }
          
          return $id;
@@ -211,7 +232,7 @@ class eventDesigner {
         
       $id ? $where = array('id'=>$id) : '';
       
-      $res = $this->db->Select("equipments", $where);
+      $res = $this->db->Select($this->dbpref."equipments", $where);
       
       if($this->db->lastError == null && $this->db->records !== 0){
          $item = $res;
@@ -221,6 +242,23 @@ class eventDesigner {
       }
       
       return $item;
+    }
+    
+    function delEquipment($id){
+      global $server;
+      $item = null;   
+        
+      $where = array('id'=>$id);
+      
+      $res = $this->db->Delete($this->dbpref."equipments", $where);
+      
+      if($this->db->lastError == null && $this->db->affected !== 0){
+         $item = $id;
+      }else{
+         $item = $server->fault('Server', 'id: '.$id.' not found', 'delEquipment', 'details'); 
+      }
+      
+      return $item;  
     }
     
     function getEquipmentList(){
@@ -239,12 +277,12 @@ class eventDesigner {
                       'lastname' => $lastname
                       ); 
         if($id == null){
-             if($this->db->Insert($data, "actors")){
+             if($this->db->Insert($data, $this->dbpref."actors")){
                 $id = $this->db->LastInsertID();    
              }                 
         } else {
             $where =  array( 'id' => $id);
-            $this->db->Update("actors", $data, $where);                          
+            $this->db->Update($this->dbpref."actors", $data, $where);                          
         } 
         
         return $id;
@@ -256,15 +294,30 @@ class eventDesigner {
         
       $id ? $where = array('id'=>$id) : '';
       
-      $res = $this->db->Select("actors", $where);
+      $res = $this->db->Select($this->dbpref."actors", $where);
       
       if($this->db->lastError == null && $this->db->records !== 0){
          $item = $res;
       }else{
-         $item = $server->fault('Server', 'Not found', 'getEquipment', 'details');  //$this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
+         $item = $server->fault('Server', 'Not found', 'getActor', 'details');  //$this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
       }
       
       return $item;
+    }
+    
+    function delActor($id){
+      global $server;
+      $item = null;   
+        
+      $where = array('id'=>$id);
+      
+      $res = $this->db->Delete($this->dbpref."actors", $where);
+      
+      if($this->db->lastError == null && $this->db->affected !== 0){
+         $item = $id;
+      }else{
+         $item = $server->fault('Server', 'id: '.$id.' not found', 'delActor', 'details');  //$this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
+      }   
     }
     
     function getActorList(){
@@ -284,12 +337,12 @@ class eventDesigner {
                       'actorid' => $actorid
                       ); 
         if($id == null){
-             if($this->db->Insert($data, "characters")){
+             if($this->db->Insert($data, $this->dbpref."characters")){
                 $id = $this->db->LastInsertID();    
              }                 
         } else {
             $where =  array( 'id' => $id);
-            $this->db->Update("characters", $data, $where);                          
+            $this->db->Update($this->dbpref."characters", $data, $where);                          
         } 
         
         return $id;
@@ -300,7 +353,7 @@ class eventDesigner {
         
       $id ? $where = array('id'=>$id) : '';
       
-      $res = $this->db->Select("characters", $where);
+      $res = $this->db->Select($this->dbpref."characters", $where);
       
       if($this->db->lastError == null){
          $item = $res;
@@ -309,6 +362,24 @@ class eventDesigner {
       }
       
       return $item;
+    }
+    
+    function delCharacter($id){
+      global $server;  
+      $item = null;   
+        
+      $where = array('id'=>$id);
+      
+      $res = $this->db->Delete($this->dbpref."characters", $where);  
+      
+      if($this->db->lastError == null && $this->db->affected !== 0){
+         $item = $id;
+      }else{
+         $item = $server->fault('Server', 'id: '.$id.' not found', 'delCharacter', 'details'); //new soap_fault('Server', '', $this->db->lastError);   
+      }
+      
+      return $item;
+      
     }
     
     function getCharacterList(){

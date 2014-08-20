@@ -1,8 +1,7 @@
 [PHPEdWorkspace]
-Project0=Z:\home\eventdesigner\www\eventdesigner.ppj
-ProjectCount=1
+Project0=Z:\home\eventclient\eventclient.ppj
+Project1=Z:\home\eventdesigner\www\eventdesigner.ppj
+ProjectCount=2
 ActiveProject=Z:\home\eventdesigner\www\eventdesigner.ppj
 [Expanded]
 eventdesigner=1
-eventdesigner:eventdesigner=1
-eventdesigner:eventdesigner:inc=1
