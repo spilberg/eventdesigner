@@ -358,10 +358,15 @@ class eventDesigner {
       if($this->db->lastError == null){
          $item = $res;
       }else{
-         $item = $this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
+         $item = $server->fault('Server', 'Not found', 'getCharacter', 'details'); //new soap_fault('Server', '', $this->db->lastError);   
       }
       
       return $item;
+    }
+    
+    function getCharacterList(){
+        $ret = $this->getCharacter();
+        return (!is_array($ret[0])) ? array(0 => $ret) : $ret;
     }
     
     function delCharacter($id){
@@ -382,9 +387,6 @@ class eventDesigner {
       
     }
     
-    function getCharacterList(){
-        $ret = $this->getCharacter();
-        return (!is_array($ret[0])) ? array(0 => $ret) : $ret;
-    }
+    
 }
 ?>

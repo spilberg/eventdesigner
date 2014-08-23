@@ -63,6 +63,18 @@ $server->wsdl->addComplexType(
 );
 
 /**
+* @desc Franchisee structure defenition
+*/
+$server->wdsl->addComplexType(
+     'Franchisee',
+     'complexType', 'struct', 'all', '',
+     array(
+         'franchiseename' => array('name' => 'franchiseename', 'type' => 'xsd:string'),
+         'franchiseecode' => array('name' => 'franchiseecode', 'type' => 'xsd:string')
+     )
+);
+
+/**
 * @desc Location struvture defenition
 */
 $server->wsdl->addComplexType(
@@ -139,7 +151,7 @@ $server->wsdl->addComplexType(
 ); 
 
 $server->wsdl->addComplexType(
-    'Characterist',
+    'Characterlist',
     'complexType', 'array', '', 'SOAP-ENC:Array',
     array( 'character' => array('name' => 'character', 'type' => 'tns:Character') ),
     array( array( "ref" => "SOAP-ENC:arrayType", "wsdl:arrayType" => "tns:Character[]") ),
@@ -229,7 +241,7 @@ $server->wsdl->addComplexType(
 // ----------------- REGISTER THE METHOD TO EXPOSE --------------------------
 
 $server->register('getVersion',                                              // method name
-                   array(),                                                  // input parameters
+                   array('franchisee' => 'tns:Franchisee'),                                                  // input parameters
                    array('version' => 'xsd:string'), // output parameters
                    'urn:eventDesigner',                                      // namespace
                    'urn:eventDesigner#getVersion',                           // soapaction
@@ -365,7 +377,7 @@ $server->register('delCharacter',
 
 $server->register('getCharacterList',
                    array(),
-                   array('actors' => 'tns:Characterlist', 'error' => 'tns:Error'),
+                   array('characters' => 'tns:Characterlist', 'error' => 'tns:Error'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getCharacterList',
                    'rpc', 'encoded', 'Return Character list');                                        
@@ -374,11 +386,12 @@ $server->register('getCharacterList',
  
  /**
  * Return version of service
+ * @param array
  */
- function getVersion(){
+ function getVersion($franchisee){
     global $ed;
         $retValue = '';
-        $retValue = array('version' => $ed->getVersion());
+        $retValue = $ed->getVersion(); //array('version' => $ed->getVersion());
     return $retValue;
 }
 
@@ -601,7 +614,8 @@ function delCharacter($id){
 */
 function getCharacterList(){
     global $ed;
-    return array('characters' => $ed->getCharacterList());
+    $rrr = array('characters' => $ed->getCharacterList(), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+    return $rrr;
 }
 
 // defenition Event function

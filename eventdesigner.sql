@@ -34,3 +34,12 @@ CREATE TABLE `characters` (
 PRIMARY KEY ( `id` )
 );
 
+CREATE TABLE `franchisee` (
+`id` INT NOT NULL AUTO_INCREMENT ,
+`franchiseename` VARCHAR( 150 ) NOT NULL ,
+`franchiseecode` VARCHAR( 150 ) NOT NULL ,
+`description` TEXT NOT NULL ,
+`notes` TEXT NOT NULL ,
+PRIMARY KEY ( `id` )
+);
+
