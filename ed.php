@@ -65,14 +65,13 @@ $server->wsdl->addComplexType(
 /**
 * @desc Franchisee structure defenition
 */
-$server->wdsl->addComplexType(
-     'Franchisee',
+ $server->wsdl->addComplexType(
+     'Client',
      'complexType', 'struct', 'all', '',
-     array(
-         'franchiseename' => array('name' => 'franchiseename', 'type' => 'xsd:string'),
-         'franchiseecode' => array('name' => 'franchiseecode', 'type' => 'xsd:string')
+     array( 'clientname' => array('name' => 'clientname', 'type' => 'xsd:string'),
+            'clientcode' => array('name' => 'clientcode', 'type' => 'xsd:string')
      )
-);
+); 
 
 /**
 * @desc Location struvture defenition
@@ -239,9 +238,9 @@ $server->wsdl->addComplexType(
 
 
 // ----------------- REGISTER THE METHOD TO EXPOSE --------------------------
-
+// 'franchisee' => 'tns:Franchisee'
 $server->register('getVersion',                                              // method name
-                   array('franchisee' => 'tns:Franchisee'),                                                  // input parameters
+                   array('client' => 'tns:Client'),                                                  // input parameters
                    array('version' => 'xsd:string'), // output parameters
                    'urn:eventDesigner',                                      // namespace
                    'urn:eventDesigner#getVersion',                           // soapaction
@@ -252,60 +251,60 @@ $server->register('getVersion',                                              // 
                    
 // ------------------ Event ----------------
 $server->register('getEvent',
-                   array('eventid' => 'xsd:string'),
-                   array('event' => 'tns:Event', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'eventid' => 'xsd:string'),
+                   array('event' => 'tns:Event'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getEvent',
                    'rpc', 'encoded', 'Return event object');
 
 // Return list of events
 $server->register('getEventList',
-                   array('userid' => 'xsd:string'),
-                   array('eventlist' => 'tns:Eventlist', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client'),
+                   array('eventlist' => 'tns:Eventlist'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getEventList',
                    'rpc', 'encoded', 'Return list of events');  
                                       
 // ------------------ location -------------                   
 $server->register('setLocation', 
-                   array('id' => 'xsd:string', 'locationname' => 'xsd:string', 'description' => 'xsd:string', 'latitude' => 'xsd:string', 'longitude' => 'xsd:string'),
-                   array('locationid' => 'xsd:string', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string', 'locationname' => 'xsd:string', 'description' => 'xsd:string', 'latitude' => 'xsd:string', 'longitude' => 'xsd:string'),
+                   array('locationid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#setLocation',
                    'rpc', 'encoded', 'Insert location');
                    
 $server->register('getLocation',
-                   array('id' => 'xsd:string'),
-                   array('location' => 'tns:Location', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('location' => 'tns:Location'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getLocation',
                    'rpc', 'encoded', 'Return Location');
                    
 $server->register('delLocation', 
-                   array('id' => 'xsd:string'),
-                   array('locationid' => 'xsd:string', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('locationid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#delLocation',
                    'rpc', 'encoded', 'Delete location');                                      
                   
 $server->register('getLocationList',
-                   array(),
-                   array('location' => 'tns:Locationlist', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client'),
+                   array('location' => 'tns:Locationlist'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getLocationList',
                    'rpc', 'encoded', 'Return Location list');  
 
 // -------------- equipment ----------------
 $server->register('setEquipment', 
-                   array('id' => 'xsd:string', 'equipmentname' => 'xsd:string', 'description' => 'xsd:string', 'owner' => 'xsd:string', 'costofrent' => 'xsd:string'),
-                   array('equipmentid' => 'xsd:string', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string', 'equipmentname' => 'xsd:string', 'description' => 'xsd:string', 'owner' => 'xsd:string', 'costofrent' => 'xsd:string'),
+                   array('equipmentid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#setEquipment',
                    'rpc', 'encoded', 'Insert equipment');                                                     
                    
 $server->register('getEquipment',
-                   array('id' => 'xsd:string'),
-                   array('equipment' => 'tns:Equipment', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('equipment' => 'tns:Equipment'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getEquipment',
                    'rpc', 'encoded', 'Return Equipment');  
@@ -356,14 +355,14 @@ $server->register('getActorList',
 // --------------------- character ---------------------
 $server->register('setCharacter', 
                    array('id' => 'xsd:string', 'charactername' => 'xsd:string', 'description' => 'xsd:string', 'notes' => 'xsd:string', 'actorid' => 'xsd:string'),
-                   array('characterid' => 'xsd:string', 'error' => 'tns:Error'),
+                   array('characterid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#setCharacter',
                    'rpc', 'encoded', 'Insert Character');                                                     
                    
 $server->register('getCharacter',
                    array('id' => 'xsd:string'),
-                   array('character' => 'tns:Character', 'error' => 'tns:Error'),
+                   array('character' => 'tns:Character'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getCharacter',
                    'rpc', 'encoded', 'Return Character'); 
@@ -377,7 +376,7 @@ $server->register('delCharacter',
 
 $server->register('getCharacterList',
                    array(),
-                   array('characters' => 'tns:Characterlist', 'error' => 'tns:Error'),
+                   array('characters' => 'tns:Characterlist'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getCharacterList',
                    'rpc', 'encoded', 'Return Character list');                                        
@@ -388,10 +387,10 @@ $server->register('getCharacterList',
  * Return version of service
  * @param array
  */
- function getVersion($franchisee){
+ function getVersion($client){
     global $ed;
         $retValue = '';
-        $retValue = $ed->getVersion(); //array('version' => $ed->getVersion());
+        $retValue = $ed->getVersion($client); //array('version' => $ed->getVersion());
     return $retValue;
 }
 
@@ -399,28 +398,22 @@ $server->register('getCharacterList',
 /**
 * @desc Insert record in Data Base of Location
 * 
+* @param array $client
+* @param string $id
 * @param string location name
 * @param string description
 * @param string latitude
 * @param string longitude
 * @return array
 */
-function setLocation($id, $locationname, $description, $latitude, $longitude){
+function setLocation($client, $id, $locationname, $description, $latitude, $longitude){
     global $ed;
-        $retValue = '';
-        $retValue = array('locationid' => $ed->setLocation($id, $locationname, $description, $latitude, $longitude),
-                          'error' => array('errorcode' => 0, 'errorname' => 'ok')
-                          );
-    return $retValue;
+    return $ed->setLocation($client, $id, $locationname, $description, $latitude, $longitude);
 }
 
-function delLocation($id){
-        global $ed;
-        $retValue = '';
-        $retValue = array('locationid' => $ed->delLocation($id),
-                          'error' => array('errorcode' => 0, 'errorname' => 'ok')
-                          );
-    return $retValue;
+function delLocation($client, $id){
+    global $ed;
+    return $ed->delLocation($client, $id);
 }
 
 /**
@@ -429,18 +422,9 @@ function delLocation($id){
 * @param string id
 * @return array
 */
-function getLocation($id){
+function getLocation($client, $id){
     global $ed;
-        $retValue = '';
-        $location = $ed->getLocation($id);
-        if(is_array($location)){
-            $retValue = array('location' => $location, 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-        }else{
-            $retValue = array('location' => $location, 'error' => array('errorcode' => 20, 'errorname' => 'Query result error '));
-        }
-        //$retValue = array('location' => $ed->getLocation($id), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-        //$retValue = array('location' => array( 'id' => '1', 'locationname' => 'Gidropark', 'description' => 'Bla Bla Bla', 'latitude'   => '50.50198526955379', 'longitude' => '30.5474853515625'), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-    return $retValue;
+    return $ed->getLocation($client, $id);
 }
 
 /**
@@ -448,15 +432,11 @@ function getLocation($id){
 * 
 * @return array
 */
-function getLocationList(){
+function getLocationList($client){
     global $ed;
-    $retVatue = '';
+    return $ed->getLocationList($client);
     
-    $locationlist = $ed->getLocationList();
-    
-    $retValue = array('location' => $locationlist, 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-    
-    return  $retValue; 
+    //$retValue = array('location' => $locationlist, 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
 }
 
 
@@ -471,13 +451,9 @@ function getLocationList(){
 * 
 * @return array
 */
-function setEquipment($id = null, $equipmentname, $description, $owner, $costofrent){
+function setEquipment($client, $id = null, $equipmentname, $description, $owner, $costofrent){
     global $ed;
-    $retValue = '';
-    $retValue = array('equipmentid' => $ed->setEquipment($id, $equipmentname, $description, $owner, $costofrent),
-                      'error' => array('errorcode' => 0, 'errorname' => 'ok')
-                      );
-    return $retValue;
+    return $ed->setEquipment($client, $id, $equipmentname, $description, $owner, $costofrent);
 }
 
 /**
@@ -486,13 +462,9 @@ function setEquipment($id = null, $equipmentname, $description, $owner, $costofr
 * @param mixed $id
 * @return array
 */
-function getEquipment($id){
-    global $ed, $server;
-    $retValue = '';
-    
-    $retValue = array('equipment' => $ed->getEquipment($id), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-
-    return $retValue;
+function getEquipment($client, $id){
+    global $ed;
+    return $ed->getEquipment($client, $id);
 }
 
 function delEquipment($id){
@@ -585,7 +557,7 @@ function getActorList(){
 */
 function setCharacter($id = null, $charactername, $description = '' , $notes = '', $actorid = ''){
     global $ed;
-    $retValue = array('characterid' => $ed->setCharacter($id, $charactername, $description, $notes, $actorid));
+    $retValue = $ed->setCharacter($id, $charactername, $description, $notes, $actorid); //array('characterid' => $ed->setCharacter($id, $charactername, $description, $notes, $actorid));
     return $retValue;
 }
 
@@ -598,7 +570,7 @@ function setCharacter($id = null, $charactername, $description = '' , $notes = '
 */
 function getCharacter($id){
     global $ed;
-    return array('character' => $ed->getCharacter($id));
+    return $ed->getCharacter($id); // array('character' => $ed->getCharacter($id));
 }
 
 function delCharacter($id){
@@ -614,8 +586,8 @@ function delCharacter($id){
 */
 function getCharacterList(){
     global $ed;
-    $rrr = array('characters' => $ed->getCharacterList(), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-    return $rrr;
+    //$rrr = $ed->getCharacterList(); // array('characters' => $ed->getCharacterList(), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+    return $ed->getCharacterList();
 }
 
 // defenition Event function
@@ -625,12 +597,13 @@ function getCharacterList(){
 * @param string
 * @return array
 */
-function getEvent($eventid){
+function getEvent($client, $eventid){
     global $ed;
     $retValue = '';
     
     if($eventid){
-       $retValue = array('event' => $ed->getEvent($eventid), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+       //$retValue = array('event' => $ed->getEvent($client, $eventid), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+       $retValue = $ed->getEvent($client, $eventid);
     }else{
        $retValue = array('event' => '', 'error' => array('errorcode' => 10, 'errorname' => 'param mismatch'));
     }
@@ -644,11 +617,12 @@ function getEvent($eventid){
 * @param string
 * @return array
 */
-function getEventList($userid){
+function getEventList($client){
     global $ed;
     
        $retValue = '';
-       $retValue = array('eventlist' => $ed->getEventList($userid), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+       //$retValue = array('eventlist' => $ed->getEventList($client), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+       $retValue = $ed->getEventList($client);
     
     return $retValue; 
 }
