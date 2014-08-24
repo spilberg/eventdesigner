@@ -64,7 +64,7 @@ class eventDesigner {
     function getVersion($client){
         global $server;
         
-        if($this->checkClient($client) == null) $server->fault('Server', 'client not found', 'setVersion', 'details');
+        if($this->checkClient($client) == null) $server->fault('Server', 'client not found', 'setVersion', 'details: '.$this->today);
         
         return $this->version;   
     }
@@ -165,7 +165,7 @@ class eventDesigner {
     // -------------- Location --------------------
     
     /**
-    * Insert location
+    * Insert or update location
     * 
     * @param array $client
     * @param string $id
@@ -173,7 +173,7 @@ class eventDesigner {
     * @param string $description
     * @param string $latitude
     * @param string $longitude
-    * @return string $id
+    * @return string inserted or updated $id
     */
     function setLocation($client, $id, $locationname, $description = '', $latitude= '', $longitude = ''){
         global $server;
@@ -194,7 +194,7 @@ class eventDesigner {
              }    
              
         } else {
-           $server->fault('Server', 'client not found', 'setLocation', 'details');   
+           $server->fault('Server', 'client not found', 'setLocation', 'details: '.$this->today);   
         }
         
          return $id;
@@ -214,17 +214,17 @@ class eventDesigner {
         $cl = $this->checkClient($client);
         if($cl !== null){
 
-            ($id && $cl) ? $where = array('id'=>$id, 'clientid' => $cl) : '';
+            ($id && $cl) ? $where = array('id'=>$id, 'clientid' => $cl) : $where = array('clientid' => $cl);
             $res = $this->db->Select($this->dbpref."locations", $where);
 
             if($this->db->lastError == null && $this->db->records !== 0){
                 $item = $res;
             } else {
-                $server->fault('Server', 'id: '. $id .' not found', 'getLocation', 'details');
+                $server->fault('Server', 'id: '. $id .' not found', 'getLocation', 'details: '.$this->today);
             }
 
         }else{
-            $server->fault('Server', 'client not found', 'getLocation', 'details');     
+            $server->fault('Server', 'client not found', 'getLocation', 'details: '.$this->today);     
         }
 
         return $item;
@@ -265,11 +265,11 @@ class eventDesigner {
             if($this->db->lastError == null && $this->db->affected !== 0){
                 $item = $id;
             } else {
-                $server->fault('Server', 'id: '.$id.' not found', 'delLocation', 'details'); 
+                $server->fault('Server', 'id: '.$id.' not found', 'delLocation', 'details: '.$this->today); 
             }
             
         } else {
-            $server->fault('Server', 'client not found', 'delLocation', 'details');         
+            $server->fault('Server', 'client not found', 'delLocation', 'details: '.$this->today);         
         }
         
         return $item; 
@@ -279,7 +279,7 @@ class eventDesigner {
     // -------------- Equipments -------------------
     
     /**
-    * Insert Equipment
+    * Insert or updated Equipment
     * 
     * @param array $client
     * @param string $id
@@ -287,7 +287,7 @@ class eventDesigner {
     * @param string $description
     * @param string $owner
     * @param string $costofrent
-    * @return string inserted id
+    * @return string inserted or updated id
     */
     function setEquipment($client, $id, $equipmentname, $description = '', $owner = '', $costofrent = ''){
         global $server;
@@ -307,7 +307,7 @@ class eventDesigner {
             }
 
         } else {
-            $server->fault('Server', 'client not found', 'setEquipment', 'details');   
+            $server->fault('Server', 'client not found', 'setEquipment', 'details: '.$this->today);   
         }
 
         return $id;
@@ -320,169 +320,220 @@ class eventDesigner {
         $cl = $this->checkClient($client);
         if($cl !== null){
 
-            ($id && $cl) ? $where = array('id'=>$id, 'clientid' => $cl ) : '';
+            ($id && $cl) ? $where = array('id'=>$id, 'clientid' => $cl ) : $where = array('clientid' => $cl);
 
             $res = $this->db->Select($this->dbpref."equipments", $where);
 
             if($this->db->lastError == null && $this->db->records !== 0){
                 $item = $res;
             }else{
-                $server->fault('Server', 'id: '.$id.' not found', 'getEquipment', 'details');
+                $server->fault('Server', 'id: '.$id.' not found', 'getEquipment', 'details: '.$this->today);
             }
             
         } else {
-            $server->fault('Server', 'client not found', 'getEquipment', 'details');      
+            $server->fault('Server', 'client not found', 'getEquipment', 'details: '.$this->today);      
         }
 
         return $item;
     }
     
-    function getEquipmentList(){
+    function getEquipmentList($client){
         global $server;
         
         $retValue = null;
-        $ret = $this->getEquipment();
+        $ret = $this->getEquipment($client);
         
         return (!is_array($ret[0])) ? array(0 => $ret) : $ret;
       
     }
     
-    function delEquipment($id){
-      global $server;
-      $item = null;   
-        
-      $where = array('id'=>$id);
-      
-      $res = $this->db->Delete($this->dbpref."equipments", $where);
-      
-      if($this->db->lastError == null && $this->db->affected !== 0){
-         $item = $id;
-      }else{
-         $item = $server->fault('Server', 'id: '.$id.' not found', 'delEquipment', 'details'); 
-      }
-      
-      return $item;  
+    function delEquipment($client, $id){
+        global $server;
+        $item = null;   
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){
+
+            $where = array('id'=>$id);
+
+            $res = $this->db->Delete($this->dbpref."equipments", $where);
+
+            if($this->db->lastError == null && $this->db->affected !== 0){
+                $item = $id;
+            }else{
+                $server->fault('Server', 'id: '.$id.' not found', 'delEquipment', 'details: '.$this->today); 
+            }
+            
+        } else {
+            $server->fault('Server', 'client not found', 'delEquipment', 'details: '.$this->today);         
+        }
+
+        return $item;  
     }
     
     // -------------- Actors ------------------------
-    function setActor($id, $firstname, $lastname = ''){
+    /**
+    * Insert or update actor
+    * 
+    * @param array $client
+    * @param string $id
+    * @param string $firstname
+    * @param string $lastname
+    * @return string inserted or updated id
+    */
+    function setActor($client, $id, $firstname, $lastname = ''){
         global $server;
         
-        $data = array('firstname' => $firstname,
-                      'lastname' => $lastname
-                      ); 
-        if($id == null){
-             if($this->db->Insert($data, $this->dbpref."actors")){
-                $id = $this->db->LastInsertID();    
-             }                 
+        $cl = $this->checkClient($client);
+        if($cl !== null){
+                
+            $data = array('clientid' => $cl, 'firstname' => $firstname, 'lastname' => $lastname ); 
+            
+            if($id == null){
+                 if($this->db->Insert($data, $this->dbpref."actors")){
+                    $id = $this->db->LastInsertID();    
+                 }                 
+            } else {
+                $where =  array( 'id' => $id, 'clientid' => $cl);
+                $this->db->Update($this->dbpref."actors", $data, $where);                          
+            } 
+            
         } else {
-            $where =  array( 'id' => $id);
-            $this->db->Update($this->dbpref."actors", $data, $where);                          
-        } 
+           $server->fault('Server', 'client not found', 'setActor', 'details: '.$this->today);    
+        }
         
         return $id;
     }
     
-    function getActor($id =  null){
-      global $server;
-      $item = null;   
+    function getActor($client, $id =  null){
+        global $server;
+        $item = null; 
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){
+
+            ($id && $cl) ? $where = array('id'=>$id, 'clientid' => $cl ) : $where = array('clientid' => $cl);
+
+            $res = $this->db->Select($this->dbpref."actors", $where);
+
+            if($this->db->lastError == null && $this->db->records !== 0){
+                $item = $res;
+            }else{
+                $item = $server->fault('Server', 'id: '.$id .' not found', 'getActor', 'details: '.$this->today);  //$this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
+            }
+        } else {
+            $server->fault('Server', 'client not found', 'getEquipment', 'details: '.$this->today);         
+        }
         
-      $id ? $where = array('id'=>$id) : '';
-      
-      $res = $this->db->Select($this->dbpref."actors", $where);
-      
-      if($this->db->lastError == null && $this->db->records !== 0){
-         $item = $res;
-      }else{
-         $item = $server->fault('Server', 'id: '.$id .' not found', 'getActor', 'details');  //$this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
-      }
-      
-      return $item;
+        return $item;
     }
     
-    function getActorList(){
+    function getActorList($client){
         global $server;
         
         $retValue = null;
-        $ret = $this->getActor();
+        $ret = $this->getActor($client);
         
         return (!is_array($ret[0])) ? array(0 => $ret) : $ret;
     }
     
-    function delActor($id){
-      global $server;
-      $item = null;   
-        
-      $where = array('id'=>$id);
-      
-      $res = $this->db->Delete($this->dbpref."actors", $where);
-      
-      if($this->db->lastError == null && $this->db->affected !== 0){
-         $item = $id;
-      }else{
-         $item = $server->fault('Server', 'id: '.$id.' not found', 'delActor', 'details');  //$this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
-      }   
-    }
-    
-    // -----------  Character ---------------------
-    function setCharacter($id, $charactername, $description = '', $notes = '', $actorid = ''){
-        global $server;
-        
-        $data = array('charactername' => $charactername,
-                      'description' => $description,
-                      'notes' => $notes,
-                      'actorid' => $actorid
-                      ); 
-        if($id == null){
-             if($this->db->Insert($data, $this->dbpref."characters")){
-                $id = $this->db->LastInsertID();    
-             }                 
-        } else {
-            $where =  array( 'id' => $id);
-            $this->db->Update($this->dbpref."characters", $data, $where);                          
-        } 
-        
-        return $id;
-    }
-    
-    function getCharacter($id =  null){
+    function delActor($client, $id){
         global $server;
         $item = null;   
-        
-        $id ? $where = array('id'=>$id) : '';
+        $cl = $this->checkClient($client);
+        if($cl !== null){
 
-        $res = $this->db->Select($this->dbpref."characters", $where);
+            $where = array('id'=>$id);
 
-        if($this->db->lastError == null && $this->db->records != 0){
-            $item = $res;
+            $res = $this->db->Delete($this->dbpref."actors", $where);
+
+            if($this->db->lastError == null && $this->db->affected !== 0){
+                $item = $id;
+            }else{
+                $item = $server->fault('Server', 'id: '.$id.' not found', 'delActor', 'details: '.$this->today);  //$this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
+            } 
         }else{
-             $server->fault('Server', 'id: '.$id.' not found', 'getCharacter', 'details'); //new soap_fault('Server', '', $this->db->lastError);   
-        }
+            $server->fault('Server', 'client not found', 'delActor', 'details: '.$this->today);         
+        }  
 
         return $item;
     }
     
-    function getCharacterList(){
+    // -----------  Character ---------------------
+    function setCharacter($client, $id, $charactername, $description = '', $notes = '', $actorid = ''){
         global $server;
-        $ret = $this->getCharacter();
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){
+
+            $data = array('clientid' => $cl, 'charactername' => $charactername, 'description' => $description, 'notes' => $notes, 'actorid' => $actorid); 
+            
+            if($id == null){
+                if($this->db->Insert($data, $this->dbpref."characters")){
+                    $id = $this->db->LastInsertID();    
+                }                 
+            } else {
+                $where =  array( 'id' => $id, 'clientid' => $cl);
+                $this->db->Update($this->dbpref."characters", $data, $where);                          
+            } 
+        } else {
+            $server->fault('Server', 'client not found', 'setCharacter', 'details: '.$this->today);     
+        }
+        
+        return $id;
+    }
+    
+    function getCharacter($client, $id =  null){
+        global $server;
+        $item = null;   
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){
+
+            ($id && $cl) ? $where = array('id'=>$id, 'clientid' => $cl ) : $where = array('clientid' => $cl);
+
+            $res = $this->db->Select($this->dbpref."characters", $where);
+
+            if($this->db->lastError == null && $this->db->records != 0){
+                $item = $res;
+            }else{
+                $server->fault('Server', 'id: '.$id.' not found', 'getCharacter', 'details: '.$this->today); //new soap_fault('Server', '', $this->db->lastError);   
+            }
+            
+        } else {
+            $server->fault('Server', 'client not found', 'getCharacter', 'details: '.$this->today);         
+        }
+        
+        return $item;
+    }
+    
+    function getCharacterList($client){
+        global $server;
+        $ret = $this->getCharacter($client);
         return (!is_array($ret[0])) ? array(0 => $ret) : $ret;
     }
     
-    function delCharacter($id){
-      global $server;  
-      $item = null;   
-        
-      $where = array('id'=>$id);
-      
-      $res = $this->db->Delete($this->dbpref."characters", $where);  
-      
-      if($this->db->lastError == null && $this->db->affected !== 0){
-         $item = $id;
-      }else{
-         $server->fault('Server', 'id: '.$id.' not found', 'delCharacter', 'details'); //new soap_fault('Server', '', $this->db->lastError);   
-      }
-      
-      return $item;
+    function delCharacter($client, $id){
+        global $server;  
+        $item = null;   
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){ 
+
+            $where = array('id'=>$id);
+
+            $res = $this->db->Delete($this->dbpref."characters", $where);  
+
+            if($this->db->lastError == null && $this->db->affected !== 0){
+                $item = $id;
+            }else{
+                $server->fault('Server', 'id: '.$id.' not found', 'delCharacter', 'details: '.$this->today); 
+            }
+        } else {
+            $server->fault('Server', 'client not found', 'delCharacter', 'details: '.$this->today);          
+        }
+
+        return $item;
       
     }
     

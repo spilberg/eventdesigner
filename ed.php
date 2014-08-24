@@ -310,72 +310,72 @@ $server->register('getEquipment',
                    'rpc', 'encoded', 'Return Equipment');  
 
 $server->register('delEquipment', 
-                   array('id' => 'xsd:string'),
-                   array('equipmentid' => 'xsd:string', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('equipmentid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#delEquipment',
                    'rpc', 'encoded', 'Delete equipment');                                                         
 
 $server->register('getEquipmentList',
-                   array(),
-                   array('equipments' => 'tns:Equipmentlist', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client'),
+                   array('equipments' => 'tns:Equipmentlist'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getEquipmentList',
                    'rpc', 'encoded', 'Return Equipment list');                     
 
 // --------------------- actor ---------------------
 $server->register('setActor', 
-                   array('id' => 'xsd:string', 'firstname' => 'xsd:string', 'lastname' => 'xsd:string'),
-                   array('actorid' => 'xsd:string', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string', 'firstname' => 'xsd:string', 'lastname' => 'xsd:string'),
+                   array('actorid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#setActor',
                    'rpc', 'encoded', 'Insert actor');                                                     
                    
 $server->register('getActor',
-                   array('id' => 'xsd:string'),
-                   array('actor' => 'tns:Actor', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('actor' => 'tns:Actor'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getActor',
                    'rpc', 'encoded', 'Return Actor');                                      
 
 $server->register('delActor', 
-                   array('id' => 'xsd:string'),
-                   array('actorid' => 'xsd:string', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('actorid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#delActor',
                    'rpc', 'encoded', 'Delete actor');  
                                       
 $server->register('getActorList',
-                   array(),
-                   array('actors' => 'tns:Actorlist', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client'),
+                   array('actors' => 'tns:Actorlist'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getActorList',
                    'rpc', 'encoded', 'Return Actor list');  
                    
 // --------------------- character ---------------------
 $server->register('setCharacter', 
-                   array('id' => 'xsd:string', 'charactername' => 'xsd:string', 'description' => 'xsd:string', 'notes' => 'xsd:string', 'actorid' => 'xsd:string'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string', 'charactername' => 'xsd:string', 'description' => 'xsd:string', 'notes' => 'xsd:string', 'actorid' => 'xsd:string'),
                    array('characterid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#setCharacter',
                    'rpc', 'encoded', 'Insert Character');                                                     
                    
 $server->register('getCharacter',
-                   array('id' => 'xsd:string'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
                    array('character' => 'tns:Character'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getCharacter',
                    'rpc', 'encoded', 'Return Character'); 
                    
 $server->register('delCharacter',
-                   array('id' => 'xsd:string'),
-                   array('characterid' => 'xsd:string', 'error' => 'tns:Error'),
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('characterid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#delCharacter',
                    'rpc', 'encoded', 'Delete Character');                                                        
 
 $server->register('getCharacterList',
-                   array(),
+                   array('client' => 'tns:Client'),
                    array('characters' => 'tns:Characterlist'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#getCharacterList',
@@ -435,12 +435,11 @@ function getLocation($client, $id){
 function getLocationList($client){
     global $ed;
     return $ed->getLocationList($client);
-    
-    //$retValue = array('location' => $locationlist, 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
 }
 
 
 // defenition equipment function
+
 /**
 * Insert equipment in Database
 * 
@@ -449,7 +448,7 @@ function getLocationList($client){
 * @param mixed $owner
 * @param mixed $costofrent
 * 
-* @return array
+* @return string inserted id
 */
 function setEquipment($client, $id = null, $equipmentname, $description, $owner, $costofrent){
     global $ed;
@@ -467,28 +466,27 @@ function getEquipment($client, $id){
     return $ed->getEquipment($client, $id);
 }
 
-function delEquipment($id){
+/**
+* Delete equipment
+* 
+* @param mixed $client
+* @param mixed $id
+* @return string deleted id
+*/
+function delEquipment($client, $id){
     global $ed;
-    $retValue = '';
-    $retValue = array('equipmentid' => $ed->delEquipment($id),
-                      'error' => array('errorcode' => 0, 'errorname' => 'ok')
-                      );
-    return $retValue;
+    return  $ed->delEquipment($client, $id);
 }
+
 /**
 * Get location list
 * 
+* @param array $client
 * @return array
 */
-function getEquipmentList(){
+function getEquipmentList($client){
     global $ed;
-    $retVatue = '';
-    
-    $equipmentlist = $ed->getEquipmentList();
-    
-    $retValue = array('equipments' => $equipmentlist, 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-    
-    return  $retValue; 
+    return $ed->getEquipmentList($client);
 }
 
 // defenition actors function
@@ -498,13 +496,9 @@ function getEquipmentList(){
 * @param mixed $firstname
 * @param mixed $lastname
 */
-function setActor($id = null, $firstname, $lastname = ''){
+function setActor($client, $id = null, $firstname, $lastname = ''){
     global $ed;
-    $retValue = '';
-    $retValue = array('actorid' => $ed->setActor($id, $firstname, $lastname),
-                      'error' => array('errorcode' => 0, 'errorname' => 'ok')
-                      );
-    return $retValue;
+    return $ed->setActor($client, $id, $firstname, $lastname);
 }
 
 /**
@@ -513,81 +507,87 @@ function setActor($id = null, $firstname, $lastname = ''){
 * @param mixed $id
 * @return array
 */
-function getActor($id){
+function getActor($client, $id){
     global $ed;
-    $retValue = '';
-    
-    $retValue = array('actor' => $ed->getActor($id), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-    
-    return $retValue;
+    return $ed->getActor($client, $id);
 }
 
-function delActor($id){
+
+/**
+* Get list of Actors
+* 
+* @param array $client
+* @return array
+*/
+function getActorList($client){
     global $ed;
-    $retValue = '';
-    
-    $retValue = array('actorid' => $ed->delActor($id), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-    
-    return $retValue;    
+    return $ed->getActorList($client);
 }
 
 /**
-* Get actors list
+* Delete Actor
 * 
-* @return array
+* @param array $client
+* @param string $id
+* @return string deleted id
 */
-function getActorList(){
+function delActor($client, $id){
     global $ed;
-    $retVatue = '';
-    
-    $actorlist = $ed->getActorList();
-    
-    $retValue = array('actors' => $actorlist, 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-    
-    return  $retValue; 
+    return $ed->delActor($client, $id);
 }
+
 
 // define charactor function
 
 /**
-* Insert or update cyaracter
+* Insert or update Character
 * 
-* @param mixed $firstname
-* @param mixed $lastname
+* @param array $client
+* @param string $id
+* @param string $charactername
+* @param string $description
+* @param string $notes
+* @param string $actorid
+* @return string inserted or updated id
 */
-function setCharacter($id = null, $charactername, $description = '' , $notes = '', $actorid = ''){
+function setCharacter($client, $id = null, $charactername, $description = '' , $notes = '', $actorid = ''){
     global $ed;
-    $retValue = $ed->setCharacter($id, $charactername, $description, $notes, $actorid); //array('characterid' => $ed->setCharacter($id, $charactername, $description, $notes, $actorid));
-    return $retValue;
+    return $ed->setCharacter($client, $id, $charactername, $description, $notes, $actorid);
 }
-
 
 /**
 * Get Character
 * 
+* @param mixed $client
 * @param mixed $id
-* @return array
+* @return array 
 */
-function getCharacter($id){
+function getCharacter($client, $id){
     global $ed;
-    return $ed->getCharacter($id); // array('character' => $ed->getCharacter($id));
-}
-
-function delCharacter($id){
-    global $ed;
-    
-    return array('charecterid' => $ed->delCharacter($id), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
+    return $ed->getCharacter($client, $id); // array('character' => $ed->getCharacter($id));
 }
 
 /**
-* Get Character list
+* Delete Character
 * 
+* @param mixed $client
+* @param mixed $id
+* @return string delete id
+*/
+function delCharacter($client, $id){
+    global $ed;
+    return $ed->delCharacter($client, $id);
+}
+
+/**
+* Get list of Character
+* 
+* @param mixed $client
 * @return array
 */
-function getCharacterList(){
+function getCharacterList($client){
     global $ed;
-    //$rrr = $ed->getCharacterList(); // array('characters' => $ed->getCharacterList(), 'error' => array('errorcode' => 0, 'errorname' => 'ok'));
-    return $ed->getCharacterList();
+    return $ed->getCharacterList($client);
 }
 
 // defenition Event function
