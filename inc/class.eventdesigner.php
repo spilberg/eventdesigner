@@ -86,7 +86,7 @@ class eventDesigner {
                            'notes'       => 'Event notes',
                            'responsible' => 'Vyacheslav Korbut',
                            'estimate'    => '1000',
-                           'location'    => $this->getLocation('1'),
+                           'location'    => $this->getLocation($client, '1'),
                            'taskline'    => $this->getTaskline($eventid)
                     );
                

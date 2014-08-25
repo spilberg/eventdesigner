@@ -66,11 +66,11 @@
 					<actionpoint name="Happy end!" editable="true" type="state">
 						<description>Shashlyk mashlyk</description>
                         <action duration="15" timelag="0" name="Happy end!">
+                            <equipments>
+                                <item>meat</item>
+                                <item>roaster</item>
+                            </equipments>
                         </action>
-						<equipments>
-							<item>meat</item>
-							<item>roaster</item>
-						</equipments>
 					</actionpoint>
 				</scenario>
 			</activity>
