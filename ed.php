@@ -181,6 +181,30 @@ $server->wsdl->addComplexType(
 );
 
 
+// ---------------- action point ------------------
+$server->wsdl->addComplexType(
+    'Actionpoint',
+    'complexType', 'struct', 'all', '',
+    array(
+        'id'                => array('name' => 'id', 'type' => 'xsd:string'),
+        'clientid'          => array('name' => 'id', 'type' => 'xsd:string'),
+        'actionpointname'   => array('name' => 'id', 'type' => 'xsd:string'),
+        'editable'          => array('name' => 'id', 'type' => 'xsd:string'),
+        'type'              => array('name' => 'id', 'type' => 'xsd:string'),
+        'description'       => array('name' => 'id', 'type' => 'xsd:string'),
+        'location'          => array('name' => 'id', 'type' => 'xsd:string'),
+        'action'            => array('name' => 'id', 'type' => 'xsd:string')
+    )
+); 
+
+$server->wsdl->addComplexType(
+    'Actionpointlist',
+    'complexType', 'array', '', 'SOAP-ENC:Array',
+    array( 'actionpoint' => array('name' => 'actionpoint', 'type' => 'tns:Actionpoint') ),
+    array( array( "ref" => "SOAP-ENC:arrayType", "wsdl:arrayType" => "tns:Actionpoint[]") ),
+    "tns:Actionpoint"
+);
+
 /**
 * @desc Task ComplexType defenition
 */
@@ -426,7 +450,7 @@ $server->register('delAction',
                    array('actionid' => 'xsd:string'),
                    'urn:eventDesigner',
                    'urn:eventDesigner#delAction',
-                   'rpc', 'encoded', 'Delete Character');                    
+                   'rpc', 'encoded', 'Delete Action');                    
                    
 $server->register('getActionList',
                    array('client' => 'tns:Client'),
@@ -434,6 +458,37 @@ $server->register('getActionList',
                    'urn:eventDesigner',
                    'urn:eventDesigner#getActionList',
                    'rpc', 'encoded', 'Return Action list');                        
+                   
+// ---------------- Action points --------------------
+// -----------------------  Actions -------------------------                   
+$server->register('setActionpoint',
+                  array('client' => 'tns:Client', 'id' => 'xsd:string', 'actionpointname' => 'xsd:string', 'editable' => 'xsd:string', 'type' => 'xsd:string', 'description' => 'xsd:string', 'location' => 'xsd:string', 'action' => 'xsd:string'),
+                  array('actionpointid' => 'xsd:string'),
+                  'urn:eventDesigner',
+                  'urn:eventDesigner#setActionpoint',
+                  'rpc', 'encoded', 'Insert Action point' );                   
+
+$server->register('getActionpoint',
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('actionpoint' => 'tns:Actionpoint'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#getActionpoint',
+                   'rpc', 'encoded', 'Return Action point'); 
+
+$server->register('delActionpoint',
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('actionpointid' => 'xsd:string'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#delActionpoint',
+                   'rpc', 'encoded', 'Delete Action point');                    
+                   
+$server->register('getActionpointList',
+                   array('client' => 'tns:Client'),
+                   array('actionpoints' => 'tns:Actionpointlist'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#getActionpointList',
+                   'rpc', 'encoded', 'Return Action point list');                        
+
                    
  // --------------- DEFINE THE METHOD AS A PHP FUNCTION ----------------------
  
@@ -646,11 +701,17 @@ function getCharacterList($client){
 
 // defenition action function 
 
-
 /**
 * Insert or update Action
 * 
-дописать параметры
+* @param mixed $client
+* @param mixed $id
+* @param mixed $duration
+* @param mixed $timelag
+* @param mixed $actionname
+* @param mixed $description
+* @param mixed $equipments
+* @param mixed $roles
 * @return string inserted or updated id
 */
 function setAction($client, $id = null, $duration='', $timelag ='', $actionname, $description = '', $equipments = '', $roles = ''){
@@ -692,6 +753,64 @@ function getActionList($client){
     global $ed;
     return $ed->getActionList($client);
 }
+
+
+
+// defenition Action point function
+/**
+* Insert or update Action
+* 
+* @param mixed $client
+* @param mixed $id
+* @param mixed $duration
+* @param mixed $timelag
+* @param mixed $actionname
+* @param mixed $description
+* @param mixed $equipments
+* @param mixed $roles
+* @return string inserted or updated id
+*/
+function setActionpoint($client, $id = null, $actionpointname, $editable = 'true', $type = 'state', $description = '', $location = '', $action = ''){
+    
+    global $ed;
+    return $ed->setActionpoint($client, $id, $actionpointname, $editable, $type, $description, $location, $action);
+}
+
+/**
+* Get Action
+* 
+* @param mixed $client
+* @param mixed $id
+* @return array 
+*/
+function getActionpoint($client, $id){
+    global $ed;
+    return $ed->getActionpoint($client, $id); 
+}
+
+/**
+* Delete Action
+* 
+* @param mixed $client
+* @param mixed $id
+* @return string delete id
+*/
+function delActionpoint($client, $id){
+    global $ed;
+    return $ed->delActionpoint($client, $id);
+}
+
+/**
+* Get list of Action
+* 
+* @param mixed $client
+* @return array
+*/
+function getActionpointList($client){
+    global $ed;
+    return $ed->getActionpointList($client);
+}
+
 
 
 // defenition Event function

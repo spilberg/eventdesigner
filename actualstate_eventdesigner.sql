@@ -12,13 +12,13 @@
 DROP TABLE IF EXISTS actionpoints;
 CREATE TABLE IF NOT EXISTS actionpoints (
   id int(11) NOT NULL auto_increment,
-  clientid int(11) NOT NULL DEFAULT '' ,
-  actionpointname varchar(150) NOT NULL DEFAULT '' ,
-  editable varchar(150) NOT NULL DEFAULT '' ,
-  type text NOT NULL DEFAULT '' ,
-  description varchar(150) NOT NULL DEFAULT '' ,
-  location int(11) NOT NULL DEFAULT '' ,
-  action text NOT NULL DEFAULT '' ,
+  clientid int(11) NOT NULL ,
+  actionpointname varchar(150) NOT NULL ,
+  editable varchar(150) NOT NULL ,
+  type varchar(150) NOT NULL ,
+  description varchar(150) NOT NULL ,
+  location text NOT NULL ,
+  action text NOT NULL ,
   PRIMARY KEY (id)
 );
 
@@ -39,13 +39,13 @@ INSERT INTO actionpoints VALUES("2", "1", "Forest way", "true", "flow", "Forest 
 DROP TABLE IF EXISTS actions;
 CREATE TABLE IF NOT EXISTS actions (
   id int(11) NOT NULL auto_increment,
-  clientid int(11) NOT NULL DEFAULT '' ,
-  duration int(11) NOT NULL DEFAULT '' ,
-  timelag int(11) NOT NULL DEFAULT '' ,
-  actionname varchar(150) NOT NULL DEFAULT '' ,
-  description varchar(150) NOT NULL DEFAULT '' ,
-  equipments text NOT NULL DEFAULT '' ,
-  roles text NOT NULL DEFAULT '' ,
+  clientid int(11) NOT NULL ,
+  duration int(11) NOT NULL ,
+  timelag int(11) NOT NULL ,
+  actionname varchar(150) NOT NULL ,
+  description varchar(150) NOT NULL ,
+  equipments text NOT NULL ,
+  roles text NOT NULL ,
   PRIMARY KEY (id)
 );
 
@@ -67,8 +67,8 @@ DROP TABLE IF EXISTS actors;
 CREATE TABLE IF NOT EXISTS actors (
   id int(11) NOT NULL auto_increment,
   clientid int(11) unsigned ,
-  firstname varchar(50) NOT NULL DEFAULT '' ,
-  lastname varchar(50) NOT NULL DEFAULT '' ,
+  firstname varchar(50) NOT NULL ,
+  lastname varchar(50) NOT NULL ,
   PRIMARY KEY (id)
 );
 
@@ -90,10 +90,10 @@ DROP TABLE IF EXISTS characters;
 CREATE TABLE IF NOT EXISTS characters (
   id int(11) NOT NULL auto_increment,
   clientid int(11) unsigned ,
-  charactername varchar(150) NOT NULL DEFAULT '' ,
-  description text NOT NULL DEFAULT '' ,
-  notes text NOT NULL DEFAULT '' ,
-  actorid varchar(50) NOT NULL DEFAULT '' ,
+  charactername varchar(150) NOT NULL ,
+  description text NOT NULL ,
+  notes text NOT NULL ,
+  actorid varchar(50) NOT NULL ,
   PRIMARY KEY (id)
 );
 
@@ -116,10 +116,10 @@ INSERT INTO characters VALUES("4", "1", "Archer", "Archer", "Archer", "1");
 DROP TABLE IF EXISTS clients;
 CREATE TABLE IF NOT EXISTS clients (
   id int(11) NOT NULL auto_increment,
-  clientname varchar(150) NOT NULL DEFAULT '' ,
-  clientcode varchar(150) NOT NULL DEFAULT '' ,
-  description text NOT NULL DEFAULT '' ,
-  notes text NOT NULL DEFAULT '' ,
+  clientname varchar(150) NOT NULL ,
+  clientcode varchar(150) NOT NULL ,
+  description text NOT NULL ,
+  notes text NOT NULL ,
   PRIMARY KEY (id)
 );
 
@@ -140,10 +140,10 @@ DROP TABLE IF EXISTS equipments;
 CREATE TABLE IF NOT EXISTS equipments (
   id int(11) NOT NULL auto_increment,
   clientid int(11) unsigned ,
-  equipmentname varchar(150) NOT NULL DEFAULT '' ,
-  description text NOT NULL DEFAULT '' ,
-  owner varchar(50) NOT NULL DEFAULT '' ,
-  costofrent varchar(50) NOT NULL DEFAULT '' ,
+  equipmentname varchar(150) NOT NULL ,
+  description text NOT NULL ,
+  owner varchar(50) NOT NULL ,
+  costofrent varchar(50) NOT NULL ,
   PRIMARY KEY (id)
 );
 
@@ -168,10 +168,10 @@ DROP TABLE IF EXISTS locations;
 CREATE TABLE IF NOT EXISTS locations (
   id int(11) NOT NULL auto_increment,
   clientid int(11) unsigned ,
-  locationname varchar(150) NOT NULL DEFAULT '' ,
-  description text NOT NULL DEFAULT '' ,
-  latitude varchar(50) NOT NULL DEFAULT '' ,
-  longitude varchar(50) NOT NULL DEFAULT '' ,
+  locationname varchar(150) NOT NULL ,
+  description text NOT NULL ,
+  latitude varchar(50) NOT NULL ,
+  longitude varchar(50) NOT NULL ,
   PRIMARY KEY (id)
 );
 
@@ -192,10 +192,10 @@ INSERT INTO locations VALUES("2", "1", "PDN", "PDN location", "50.50198526955379
 DROP TABLE IF EXISTS scenarios;
 CREATE TABLE IF NOT EXISTS scenarios (
   id int(11) NOT NULL auto_increment,
-  clientid int(11) NOT NULL DEFAULT '' ,
-  scenarioname varchar(150) NOT NULL DEFAULT '' ,
-  description varchar(150) NOT NULL DEFAULT '' ,
-  actionpoints text NOT NULL DEFAULT '' ,
+  clientid int(11) NOT NULL ,
+  scenarioname varchar(150) NOT NULL ,
+  description varchar(150) NOT NULL ,
+  actionpoints text NOT NULL ,
   PRIMARY KEY (id)
 );
 
@@ -215,13 +215,13 @@ INSERT INTO scenarios VALUES("1", "1", "Dragon\'s Egg", "scenario", "1,2");
 DROP TABLE IF EXISTS tasks;
 CREATE TABLE IF NOT EXISTS tasks (
   id int(11) NOT NULL auto_increment,
-  clientid int(11) NOT NULL DEFAULT '' ,
-  starttime datetime NOT NULL DEFAULT '' ,
-  endtime datetime NOT NULL DEFAULT '' ,
-  taskname varchar(150) NOT NULL DEFAULT '' ,
-  description varchar(150) NOT NULL DEFAULT '' ,
-  responsible varchar(150) NOT NULL DEFAULT '' ,
-  cost varchar(50) NOT NULL DEFAULT '' ,
+  clientid int(11) NOT NULL ,
+  starttime datetime NOT NULL ,
+  endtime datetime NOT NULL ,
+  taskname varchar(150) NOT NULL ,
+  description varchar(150) NOT NULL ,
+  responsible varchar(150) NOT NULL ,
+  cost varchar(50) NOT NULL ,
   PRIMARY KEY (id)
 );
 

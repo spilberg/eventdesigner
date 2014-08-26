@@ -571,7 +571,7 @@ class eventDesigner {
 
             ($id && $cl) ? $where = array('id'=>$id, 'clientid' => $cl ) : $where = array('clientid' => $cl);
 
-            $res = $this->db->Select($this->dbpref."actionss", $where);
+            $res = $this->db->Select($this->dbpref."actions", $where);
 
             if($this->db->lastError == null && $this->db->records != 0){
                 $item = $res;
@@ -615,6 +615,86 @@ class eventDesigner {
         return $item;
       
     }    
+    
+    // -------------  Action Point --------------
+    function setActionpoint($client, $id, $actionpointname, $editable, $type, $description = '', $location = '', $action = ''){
+                            
+        global $server;
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){
+                                             
+            $data = array('clientid' => $cl, 'actionpointname' => $actionpointname, 'editable' => $editable, 'type' => $type, 'description' => $description, 'location' => $location, 'action' => $action); 
+            
+            if($id == null){
+                if($this->db->Insert($data, $this->dbpref."actionpoints")){
+                    $id = $this->db->LastInsertID();    
+                }                 
+            } else {
+                $where =  array( 'id' => $id, 'clientid' => $cl);
+                $this->db->Update($this->dbpref."actionpoints", $data, $where);                          
+            } 
+        } else {
+            $server->fault('Server', 'client not found', 'setActionpoint', 'details: '.$this->today);     
+        }
+        
+        return $id;
+    }
+    
+    function getActionpoint($client, $id =  null){
+        global $server;
+        $item = null;   
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){
+
+            ($id && $cl) ? $where = array('id'=>$id, 'clientid' => $cl ) : $where = array('clientid' => $cl);
+
+            $res = $this->db->Select($this->dbpref."actionpoints", $where);
+
+            if($this->db->lastError == null && $this->db->records != 0){
+                $item = $res;
+            }else{
+                $server->fault('Server', 'id: '.$id.' not found', 'getActionpoint', 'details: '.$this->today); 
+            }
+            
+        } else {
+            $server->fault('Server', 'client not found', 'getActionpoint', 'details: '.$this->today);         
+        }
+        
+        return $item;
+    }
+    
+    function getActionpointList($client){
+        global $server;
+        $ret = $this->getActionpoint($client);
+        return (!is_array($ret[0])) ? array(0 => $ret) : $ret;
+    }
+    
+    function delActionpoint($client, $id){
+        global $server;  
+        $item = null;   
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){ 
+
+            $where = array('id'=>$id);
+
+            $res = $this->db->Delete($this->dbpref."actionpoints", $where);  
+
+            if($this->db->lastError == null && $this->db->affected !== 0){
+                $item = $id;
+            }else{
+                $server->fault('Server', 'id: '.$id.' not found', 'delActionpoint', 'details: '.$this->today); 
+            }
+        } else {
+            $server->fault('Server', 'client not found', 'delActionpoint', 'details: '.$this->today);          
+        }
+
+        return $item;
+      
+    }    
+    
     
 }
 ?>
