@@ -157,6 +157,30 @@ $server->wsdl->addComplexType(
     "tns:Character"
 );
 
+// ---------------- action ------------------
+$server->wsdl->addComplexType(
+    'Action',
+    'complexType', 'struct', 'all', '',
+    array(
+        'id'            => array('name' => 'id', 'type' => 'xsd:string'),
+        'duration'      => array('name' => 'duration', 'type' => 'xsd:string'), 
+        'timelag'       => array('name' => 'timelag', 'type' => 'xsd:string'), 
+        'actionname'    => array('name' => 'actionname', 'type' => 'xsd:string'),
+        'description'   => array('name' => 'description', 'type' => 'xsd:string'),
+        'equipments'    => array('name' => 'equipments', 'type' => 'xsd:string'),
+        'roles'         => array('name' => 'roles', 'type' => 'xsd:string')
+    )
+); 
+
+$server->wsdl->addComplexType(
+    'Actionlist',
+    'complexType', 'array', '', 'SOAP-ENC:Array',
+    array( 'action' => array('name' => 'action', 'type' => 'tns:Action') ),
+    array( array( "ref" => "SOAP-ENC:arrayType", "wsdl:arrayType" => "tns:Action[]") ),
+    "tns:Action"
+);
+
+
 /**
 * @desc Task ComplexType defenition
 */
@@ -380,7 +404,37 @@ $server->register('getCharacterList',
                    'urn:eventDesigner',
                    'urn:eventDesigner#getCharacterList',
                    'rpc', 'encoded', 'Return Character list');                                        
- 
+                   
+
+// -----------------------  Actions -------------------------                   
+$server->register('setAction',
+                  array('client' => 'tns:Client', 'id' => 'xsd:string', 'duration' => 'xsd:string', 'timelag' => 'xsd:string', 'actionname' => 'xsd:string', 'description' => 'xsd:string', 'equipments' => 'xsd:string', 'roles' => 'xsd:string'),
+                  array('actionid' => 'xsd:string'),
+                  'urn:eventDesigner',
+                  'urn:eventDesigner#setAction',
+                  'rpc', 'encoded', 'Insert Action' );                   
+
+$server->register('getAction',
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('action' => 'tns:Action'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#getAction',
+                   'rpc', 'encoded', 'Return Action'); 
+
+$server->register('delAction',
+                   array('client' => 'tns:Client', 'id' => 'xsd:string'),
+                   array('actionid' => 'xsd:string'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#delAction',
+                   'rpc', 'encoded', 'Delete Character');                    
+                   
+$server->register('getActionList',
+                   array('client' => 'tns:Client'),
+                   array('actions' => 'tns:Actionlist'),
+                   'urn:eventDesigner',
+                   'urn:eventDesigner#getActionList',
+                   'rpc', 'encoded', 'Return Action list');                        
+                   
  // --------------- DEFINE THE METHOD AS A PHP FUNCTION ----------------------
  
  /**
@@ -589,6 +643,56 @@ function getCharacterList($client){
     global $ed;
     return $ed->getCharacterList($client);
 }
+
+// defenition action function 
+
+
+/**
+* Insert or update Action
+* 
+дописать параметры
+* @return string inserted or updated id
+*/
+function setAction($client, $id = null, $duration='', $timelag ='', $actionname, $description = '', $equipments = '', $roles = ''){
+    global $ed;
+    return $ed->setAction($client, $id, $charactername, $description, $notes, $actorid);
+}
+
+/**
+* Get Action
+* 
+* @param mixed $client
+* @param mixed $id
+* @return array 
+*/
+function getAction($client, $id){
+    global $ed;
+    return $ed->getAction($client, $id); 
+}
+
+/**
+* Delete Action
+* 
+* @param mixed $client
+* @param mixed $id
+* @return string delete id
+*/
+function delAction($client, $id){
+    global $ed;
+    return $ed->delAction($client, $id);
+}
+
+/**
+* Get list of Action
+* 
+* @param mixed $client
+* @return array
+*/
+function getActionList($client){
+    global $ed;
+    return $ed->getActionList($client);
+}
+
 
 // defenition Event function
 /**

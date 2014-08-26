@@ -497,7 +497,7 @@ class eventDesigner {
             if($this->db->lastError == null && $this->db->records != 0){
                 $item = $res;
             }else{
-                $server->fault('Server', 'id: '.$id.' not found', 'getCharacter', 'details: '.$this->today); //new soap_fault('Server', '', $this->db->lastError);   
+                $server->fault('Server', 'id: '.$id.' not found', 'getCharacter', 'details: '.$this->today); 
             }
             
         } else {
@@ -537,6 +537,84 @@ class eventDesigner {
       
     }
     
+    
+    // -----------  Action ---------------------
+    function setAction($client, $id, $duration='', $timelag ='', $actionname, $description = '', $equipments = '', $roles = ''){
+        global $server;
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){
+
+            $data = array('clientid' => $cl, 'duration' => $duration, 'timelag' => $timelag, 'actionname' => $actionname, 'description' => $description, 'equipments' =>  $equipments, 'roles' => $roles); 
+            
+            if($id == null){
+                if($this->db->Insert($data, $this->dbpref."actions")){
+                    $id = $this->db->LastInsertID();    
+                }                 
+            } else {
+                $where =  array( 'id' => $id, 'clientid' => $cl);
+                $this->db->Update($this->dbpref."actions", $data, $where);                          
+            } 
+        } else {
+            $server->fault('Server', 'client not found', 'setAction', 'details: '.$this->today);     
+        }
+        
+        return $id;
+    }
+    
+    function getAction($client, $id =  null){
+        global $server;
+        $item = null;   
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){
+
+            ($id && $cl) ? $where = array('id'=>$id, 'clientid' => $cl ) : $where = array('clientid' => $cl);
+
+            $res = $this->db->Select($this->dbpref."actionss", $where);
+
+            if($this->db->lastError == null && $this->db->records != 0){
+                $item = $res;
+            }else{
+                $server->fault('Server', 'id: '.$id.' not found', 'getAction', 'details: '.$this->today); 
+            }
+            
+        } else {
+            $server->fault('Server', 'client not found', 'getAction', 'details: '.$this->today);         
+        }
+        
+        return $item;
+    }
+    
+    function getActionList($client){
+        global $server;
+        $ret = $this->getAction($client);
+        return (!is_array($ret[0])) ? array(0 => $ret) : $ret;
+    }
+    
+    function delAction($client, $id){
+        global $server;  
+        $item = null;   
+
+        $cl = $this->checkClient($client);
+        if($cl !== null){ 
+
+            $where = array('id'=>$id);
+
+            $res = $this->db->Delete($this->dbpref."actions", $where);  
+
+            if($this->db->lastError == null && $this->db->affected !== 0){
+                $item = $id;
+            }else{
+                $server->fault('Server', 'id: '.$id.' not found', 'delAction', 'details: '.$this->today); 
+            }
+        } else {
+            $server->fault('Server', 'client not found', 'delAction', 'details: '.$this->today);          
+        }
+
+        return $item;
+      
+    }    
     
 }
 ?>
