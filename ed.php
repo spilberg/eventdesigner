@@ -11,16 +11,16 @@
     $log = new KLogger("errorlog", KLogger::INFO);
     $db = new MySQL($ed_db, $ed_db_user, $ed_db_pass, $ed_db_host);
    // $today = date("Y-m-d H:i:s");
-   
     
-// Create event Designer instance
-$ed = new eventDesigner($db);
 
 // Create the server instance
 $server = new soap_server();
 
 $server->soap_defencoding = 'UTF-8';
 //$server->soap_defencoding = 'cp1251';
+
+// Create event Designer instance
+$ed = new eventDesigner($db, $log);
 
 // Initialize WSDL support
 $server->configureWSDL('eventDesigner', 'urn:eventDesigner');

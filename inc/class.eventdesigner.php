@@ -13,23 +13,33 @@ class eventDesigner {
     * 
     * @var mixed
     */
-    var $version = "";
+    var $version = "Event Designer version 0.0.0.5";
     
     var $db = null;
+    
+    var $log = null;
     
     var $today = null; 
     
     var $dbpref = '';
  
-    
+    /**
+    * @todo переписать регистрацию ошибок
+    * оставить в класе только заполнение полей с ошибками анализоировать ошибки 
+    * толко снаружи класа
+    * 
+    * 
+    */
     
     /**
     * Constructor
     */
-    function eventDesigner($db = null){
+    function eventDesigner($db, $log){
+       
        $this->db = $db;
+       $this->log = $log;
        $this->today = date("Y-m-d H:i:s"); 
-       $this->version = "Event Designer version 0.0.0.5";
+      // $this->version = "Event Designer version 0.0.0.5";
        //$this->dbpref = "jos_event_";
        $this->dbpref = "";
     }
@@ -40,7 +50,8 @@ class eventDesigner {
     * @param mixed $client
     * @return string $id
     */
-    function checkClient($client){
+    private function checkClient($client){
+      global $server;
        
       $retValue = null;
         
@@ -50,7 +61,11 @@ class eventDesigner {
       
       if($this->db->lastError == null && $this->db->records !== 0){
          $retValue = $res['id'];
+      }else {
+        $this->log->logAlert('Client not found, function: checkClient');
+        $server->fault('Server', 'client not found', 'checkClient', 'details: '.$this->today);     
       }
+            
       
       return $retValue; 
     }
@@ -64,7 +79,10 @@ class eventDesigner {
     function getVersion($client){
         global $server;
         
-        if($this->checkClient($client) == null) $server->fault('Server', 'client not found', 'setVersion', 'details: '.$this->today);
+        if($this->checkClient($client) == null) {
+            $this->log->logAlert('client not found', 'function: getVersion');
+            $server->fault('Server', 'client not found', 'getVersion', 'details: '.$this->today);   
+        }
         
         return $this->version;   
     }
@@ -193,9 +211,13 @@ class eventDesigner {
                  $this->db->Update($this->dbpref."locations", $data, $where);    
              }    
              
-        } else {
-           $server->fault('Server', 'client not found', 'setLocation', 'details: '.$this->today);   
-        }
+             if ($this->db->lastError !== null) $this->log->logError($this->db->lastError);
+             
+        } /* else {
+            $this->log->logAlert('Client not found, function: setLocation');
+            $server->fault('Server', 'client not found', 'setLocation', 'details: '.$this->today); 
+             
+        }    */
         
          return $id;
     }
@@ -220,12 +242,14 @@ class eventDesigner {
             if($this->db->lastError == null && $this->db->records !== 0){
                 $item = $res;
             } else {
+                $this->log->logAlert('id: '. $id .' not found, function: getLocation');
                 $server->fault('Server', 'id: '. $id .' not found', 'getLocation', 'details: '.$this->today);
             }
 
-        }else{
+        } /* else{
+            $this->log->logAlert('Client not found, function: getLocation');
             $server->fault('Server', 'client not found', 'getLocation', 'details: '.$this->today);     
-        }
+        }    */
 
         return $item;
     }
@@ -265,12 +289,13 @@ class eventDesigner {
             if($this->db->lastError == null && $this->db->affected !== 0){
                 $item = $id;
             } else {
+                $this->log->logAlert('id: '. $id .' not found, function: delLocation');
                 $server->fault('Server', 'id: '.$id.' not found', 'delLocation', 'details: '.$this->today); 
             }
             
-        } else {
+        } /* else {
             $server->fault('Server', 'client not found', 'delLocation', 'details: '.$this->today);         
-        }
+        } */
         
         return $item; 
     }
@@ -305,10 +330,12 @@ class eventDesigner {
                 $where =  array( 'id' => $id, 'clientid' => $cl);
                 $this->db->Update($this->dbpref."equipments", $data, $where);                          
             }
+            
+            if ($this->db->lastError !== null ) $this->log->logError($this->db->lastError);
 
-        } else {
+        } /* else {
             $server->fault('Server', 'client not found', 'setEquipment', 'details: '.$this->today);   
-        }
+        }  */
 
         return $id;
     }
@@ -330,9 +357,9 @@ class eventDesigner {
                 $server->fault('Server', 'id: '.$id.' not found', 'getEquipment', 'details: '.$this->today);
             }
             
-        } else {
+        } /* else {
             $server->fault('Server', 'client not found', 'getEquipment', 'details: '.$this->today);      
-        }
+        } */
 
         return $item;
     }
@@ -398,9 +425,11 @@ class eventDesigner {
                 $this->db->Update($this->dbpref."actors", $data, $where);                          
             } 
             
-        } else {
+            if ($this->db->lastError !== null) $this->log->logError($this->db->lastError);
+            
+        } /* else {
            $server->fault('Server', 'client not found', 'setActor', 'details: '.$this->today);    
-        }
+        } */
         
         return $id;
     }
@@ -421,9 +450,9 @@ class eventDesigner {
             }else{
                 $item = $server->fault('Server', 'id: '.$id .' not found', 'getActor', 'details: '.$this->today);  //$this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
             }
-        } else {
+        } /* else {
             $server->fault('Server', 'client not found', 'getEquipment', 'details: '.$this->today);         
-        }
+        }    */
         
         return $item;
     }
@@ -452,9 +481,9 @@ class eventDesigner {
             }else{
                 $item = $server->fault('Server', 'id: '.$id.' not found', 'delActor', 'details: '.$this->today);  //$this->db->lastError; //new soap_fault('Server', '', $this->db->lastError);   
             } 
-        }else{
+        } /* else{
             $server->fault('Server', 'client not found', 'delActor', 'details: '.$this->today);         
-        }  
+        } */ 
 
         return $item;
     }
@@ -476,9 +505,12 @@ class eventDesigner {
                 $where =  array( 'id' => $id, 'clientid' => $cl);
                 $this->db->Update($this->dbpref."characters", $data, $where);                          
             } 
-        } else {
+            
+            if ($this->db->lastError !== null) $this->log->logError($this->db->lastError);
+            
+        } /* else {
             $server->fault('Server', 'client not found', 'setCharacter', 'details: '.$this->today);     
-        }
+        } */
         
         return $id;
     }
@@ -500,9 +532,9 @@ class eventDesigner {
                 $server->fault('Server', 'id: '.$id.' not found', 'getCharacter', 'details: '.$this->today); 
             }
             
-        } else {
+        } /* else {
             $server->fault('Server', 'client not found', 'getCharacter', 'details: '.$this->today);         
-        }
+        } */
         
         return $item;
     }
@@ -529,9 +561,9 @@ class eventDesigner {
             }else{
                 $server->fault('Server', 'id: '.$id.' not found', 'delCharacter', 'details: '.$this->today); 
             }
-        } else {
+        } /* else {
             $server->fault('Server', 'client not found', 'delCharacter', 'details: '.$this->today);          
-        }
+        }  */
 
         return $item;
       
@@ -555,9 +587,12 @@ class eventDesigner {
                 $where =  array( 'id' => $id, 'clientid' => $cl);
                 $this->db->Update($this->dbpref."actions", $data, $where);                          
             } 
-        } else {
+            
+            if ($this->db->lastError !== null) $this->log->logError($this->db->lastError);
+            
+        } /* else {
             $server->fault('Server', 'client not found', 'setAction', 'details: '.$this->today);     
-        }
+        } */
         
         return $id;
     }
